@@ -2,12 +2,22 @@
 //  HourlyForecastCell.swift
 //  weatherApp
 //
-//  Created by Azhar Ghurab on 18/09/1447 AH.
+//  Created by Azhar Ghurab on 19/09/1447 AH.
 //
 
 import UIKit
 
 class HourlyForecastCell: UITableViewCell {
 
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
 
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        // Configure the view for the selected state
+    }
+    
 }
