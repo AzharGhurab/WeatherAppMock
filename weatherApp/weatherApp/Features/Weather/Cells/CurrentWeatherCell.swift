@@ -9,6 +9,10 @@ import UIKit
 
 class CurrentWeatherCell: UITableViewCell {
 
+        @IBOutlet weak var cityLabel: UILabel!
+        @IBOutlet weak var temperatureLabel: UILabel!
+        @IBOutlet weak var descriptionLabel: UILabel!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

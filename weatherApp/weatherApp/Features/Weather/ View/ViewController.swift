@@ -19,38 +19,46 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
            }
        }
 
-       extension ViewController {
-           
-           func setupTableView() {
-               
-               tableView.dataSource = self
-               tableView.delegate = self
-               
-               tableView.register(
-                   UINib(nibName: "CurrentWeatherCell", bundle: nil),
-                   forCellReuseIdentifier: "CurrentWeatherCell"
-               )
-               
-               tableView.register(
-                   UINib(nibName: "HourlyForecastCell", bundle: nil),
-                   forCellReuseIdentifier: "HourlyForecastCell"
-               )
-               
-               tableView.register(
-                   UINib(nibName: "DailyForecastCell", bundle: nil),
-                   forCellReuseIdentifier: "DailyForecastCell"
-               )
-           }
-           
-           func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-               return 5
-           }
-           
-           func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+extension ViewController {
+    
+    func setupTableView() {
+        tableView.dataSource = self
+        tableView.delegate = self
 
-               let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-               cell.textLabel?.text = "Weather Row \(indexPath.row)"
-               
-               return cell
-           }
-       }
+        tableView.rowHeight = 200
+    
+        
+        tableView.register(
+            UINib(nibName: "CurrentWeatherCell", bundle: nil),
+            forCellReuseIdentifier: "CurrentWeatherCell"
+        )
+        
+        tableView.register(
+            UINib(nibName: "HourlyForecastCell", bundle: nil),
+            forCellReuseIdentifier: "HourlyForecastCell"
+        )
+        
+        tableView.register(
+            UINib(nibName: "DailyForecastCell", bundle: nil),
+            forCellReuseIdentifier: "DailyForecastCell"
+        )
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: "CurrentWeatherCell",
+            for: indexPath
+        ) as! CurrentWeatherCell
+        
+        cell.cityLabel.text = "Riyadh"
+        cell.temperatureLabel.text = "27°"
+        cell.descriptionLabel.text = "Sunny"
+        
+        return cell
+    }
+}
