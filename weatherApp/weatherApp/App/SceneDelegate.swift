@@ -18,8 +18,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 window = UIWindow(windowScene: windowScene)
          
                 let vc = ViewController(nibName: "ViewController", bundle: nil)
-         
-                window?.rootViewController = vc
+                let nav = UINavigationController(rootViewController: vc)
+                nav.navigationBar.isHidden = false
+                window?.rootViewController = nav
                 window?.makeKeyAndVisible()
         
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
