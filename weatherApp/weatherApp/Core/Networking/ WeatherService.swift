@@ -8,8 +8,5 @@
 import Foundation
 
 class WeatherService {
-        
-        
-    }
-    
-
+ 
+}

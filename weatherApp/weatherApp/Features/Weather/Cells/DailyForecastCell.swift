@@ -16,6 +16,9 @@ class DailyForecastCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        backgroundColor = .clear
+          contentView.backgroundColor = .clear
+          selectionStyle = .none
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

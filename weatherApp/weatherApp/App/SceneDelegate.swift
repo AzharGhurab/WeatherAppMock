@@ -15,13 +15,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
          
-                window = UIWindow(windowScene: windowScene)
-         
-                let vc = ViewController(nibName: "ViewController", bundle: nil)
-                let nav = UINavigationController(rootViewController: vc)
-                nav.navigationBar.isHidden = false
-                window?.rootViewController = nav
-                window?.makeKeyAndVisible()
+        let window = UIWindow(windowScene: windowScene)
+               let vc = ViewController(nibName: "ViewController", bundle: nil)
+               let nav = UINavigationController(rootViewController: vc)
+               window.rootViewController = nav
+               window.makeKeyAndVisible()
+               self.window = window
+
         
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
