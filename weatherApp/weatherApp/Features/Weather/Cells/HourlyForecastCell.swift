@@ -13,7 +13,6 @@ class HourlyForecastCell: UITableViewCell, UICollectionViewDataSource, UICollect
     
     var hourlyData: [HourlyWeather] = []
     var onHourTapped: ((HourlyWeather) -> Void)?
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -42,13 +41,14 @@ class HourlyForecastCell: UITableViewCell, UICollectionViewDataSource, UICollect
     }
     
     func configure(with data: [HourlyWeather]) {
-        hourlyData = data
+        hourlyData = Array(data.sorted { $0.dt < $1.dt }.prefix(8))
         collectionView.reloadData()
     }
     
     func formatTime(from timestamp: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "ha"
         return formatter.string(from: date)
     }
@@ -66,15 +66,7 @@ class HourlyForecastCell: UITableViewCell, UICollectionViewDataSource, UICollect
         
         let item = hourlyData[indexPath.item]
         
-        if indexPath.item == 0 {
-            cell.timeLabel.text = "Now"
-        } else {
-            cell.timeLabel.text = formatTime(from: item.dt)
-        }
-        
-        cell.temperatureLabel.text = "\(Int(item.temp))°"
-        cell.weatherImageView.image = UIImage(systemName: "cloud.sun.fill")
-        
+        cell.configure(with: item, isFirst: indexPath.item == 0) 
         return cell
     }
     
@@ -87,6 +79,6 @@ class HourlyForecastCell: UITableViewCell, UICollectionViewDataSource, UICollect
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedHour = hourlyData[indexPath.item]
         onHourTapped?(selectedHour)
-    
+        
     }
 }

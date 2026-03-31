@@ -8,31 +8,23 @@
 import Foundation
 
 struct WeatherResponse: Decodable {
-    let lat: Double
-    let lon: Double
-    let timezone: String
-    let current: CurrentWeather
-    let hourly: [HourlyWeather]
-    let daily: [DailyWeather]
-}
+    let name: String
+       let main: Main
+       let wind: Wind
+       let weather: [WeatherCondition]
+   }
 
-struct CurrentWeather: Decodable {
-    let dt: Int
-    let temp: Double
-    let humidity: Int
-    let windSpeed: Double
-    let weather: [WeatherCondition]
+   struct Main: Decodable {
+       let temp: Double
+       let humidity: Int
+   }
 
-    enum CodingKeys: String, CodingKey {
-        case dt
-        case temp
-        case humidity
-        case windSpeed = "wind_speed"
-        case weather
-    }
-}
+   struct Wind: Decodable {
+       let speed: Double
+   }
 
-struct HourlyWeather: Decodable {
+
+struct HourlyWeather {
     let dt: Int
     let temp: Double
     let weather: [WeatherCondition]
@@ -55,3 +47,17 @@ struct WeatherCondition: Decodable {
     let description: String
     let icon: String
 }
+struct ForecastResponse: Decodable {
+    let list: [ForecastItem]
+}
+
+struct ForecastItem: Decodable {
+    let dt: Int
+    let main: ForecastMain
+    let weather: [WeatherCondition]
+}
+
+struct ForecastMain: Decodable {
+    let temp: Double
+}
+

@@ -11,8 +11,8 @@ enum WeatherGradientProvider {
     static func colors(isDay: Bool) -> [CGColor] {
         if isDay {
             return [
-                UIColor(red: 0.23, green: 0.53, blue: 0.95, alpha: 1).cgColor,
-                UIColor(red: 0.45, green: 0.76, blue: 0.98, alpha: 1).cgColor,
+                UIColor(red: 0.20, green: 0.40, blue: 0.75, alpha: 1).cgColor,
+                UIColor(red: 0.10, green: 0.25, blue: 0.55, alpha: 1).cgColor,
                 UIColor(red: 0.70, green: 0.88, blue: 0.99, alpha: 1).cgColor
             ]
         } else {

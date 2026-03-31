@@ -16,19 +16,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let viewModel = WeatherViewModel()
     let backgroundGradient = CAGradientLayer()
     let searchBar = UISearchBar()
+    var currentCity: String = "Riyadh"
     
     var sampleDaily: [DailyWeather] = [
-        DailyWeather(dt: 1718874000, temp: Temperature(min: 18, max: 27), weather: []),
-        DailyWeather(dt: 1718960400, temp: Temperature(min: 19, max: 28), weather: []),
-        DailyWeather(dt: 1719046800, temp: Temperature(min: 20, max: 29), weather: []),
-        DailyWeather(dt: 1719133200, temp: Temperature(min: 21, max: 30), weather: []),
-        DailyWeather(dt: 1719219600, temp: Temperature(min: 22, max: 31), weather: []),
-        DailyWeather(dt: 1719306000, temp: Temperature(min: 23, max: 32), weather: []),
-        DailyWeather(dt: 1719392400, temp: Temperature(min: 24, max: 33), weather: []),
-        DailyWeather(dt: 1719478800, temp: Temperature(min: 25, max: 34), weather: []),
-        DailyWeather(dt: 1719565200, temp: Temperature(min: 26, max: 35), weather: []),
-        DailyWeather(dt: 1719651600, temp: Temperature(min: 27, max: 36), weather: [])
-    ]
+                DailyWeather(dt: 1767225600, temp: Temperature(min: 18, max: 27), weather: []),
+                DailyWeather(dt: 1767312000, temp: Temperature(min: 19, max: 28), weather: []),
+                DailyWeather(dt: 1767398400, temp: Temperature(min: 20, max: 29), weather: []),
+                DailyWeather(dt: 1767484800, temp: Temperature(min: 21, max: 30), weather: []),
+                DailyWeather(dt: 1767571200, temp: Temperature(min: 22, max: 31), weather: []),
+                DailyWeather(dt: 1767657600, temp: Temperature(min: 23, max: 32), weather: []),
+                DailyWeather(dt: 1767744000, temp: Temperature(min: 24, max: 33), weather: []),
+                DailyWeather(dt: 1767830400, temp: Temperature(min: 25, max: 34), weather: []),
+                DailyWeather(dt: 1767916800, temp: Temperature(min: 26, max: 35), weather: []),
+                DailyWeather(dt: 1768003200, temp: Temperature(min: 27, max: 36), weather: [])
+            ]
     
     var sampleHourly = [
         HourlyWeather(dt: 1718874000, temp: 27, weather: []),
@@ -50,6 +51,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         setupTableView()
         setupHeaderView()
         updateBackground()
+        loadWeather(for: currentCity)
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -78,9 +81,15 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let headerCell = Bundle.main.loadNibNamed("CurrentWeatherCell", owner: self)?.first as! CurrentWeatherCell
         
         headerCell.frame = CGRect(x: 0, y: 60, width: tableView.bounds.width, height: 140)
-        headerCell.cityLabel.text = "Riyadh"
-        headerCell.temperatureLabel.text = "27°"
-        headerCell.descriptionLabel.text = "Sunny"
+        headerCell.cityLabel.text = currentCity
+        if let weather = viewModel.weather {
+            headerCell.temperatureLabel.text = "\(Int(weather.main.temp))°"
+            headerCell.descriptionLabel.text = weather.weather.first?.description.capitalized ?? "Clear"
+        } else {
+            headerCell.cityLabel.text = currentCity
+            headerCell.temperatureLabel.text = "27°"
+            headerCell.descriptionLabel.text = "Sunny"
+        }
         headerCell.backgroundColor = .clear
         headerCell.contentView.backgroundColor = .clear
         
@@ -95,7 +104,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let offsetY = scrollView.contentOffset.y
         
         if offsetY > 120 {
-            navigationItem.title = "Riyadh"
+            navigationItem.title = currentCity
+            
             navigationController?.setNavigationBarHidden(false, animated: true)
         } else {
             navigationItem.title = ""
@@ -122,38 +132,40 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func updateCity(_ city: String) {
-
+        currentCity = city
+        
         if let header = tableView.tableHeaderView?.subviews.first(where: {$0 is CurrentWeatherCell}) as? CurrentWeatherCell {
             header.cityLabel.text = city
         }
-
+        
     }
-
+    
     func showDetails(for day: DailyWeather) {
         let detailsVC = DayDetailsViewController()
         detailsVC.modalPresentationStyle = .overFullScreen
         detailsVC.modalTransitionStyle = .crossDissolve
-
+        
+        detailsVC.dailyData = sampleDaily
         detailsVC.selectedDateText = shortDate(from: day.dt)
         detailsVC.fullDateText = fullDate(from: day.dt)
         detailsVC.temperatureText = "\(Int(day.temp.max))°"
         detailsVC.descriptionText = day.weather.first?.description ?? "Clear"
         detailsVC.highLowText = "H:\(Int(day.temp.max))° L:\(Int(day.temp.min))°"
-
+        
         present(detailsVC, animated: false)
     }
-   
+    
     func showDetails(for hour: HourlyWeather) {
         let detailsVC = DayDetailsViewController()
         detailsVC.modalPresentationStyle = .overFullScreen
         detailsVC.modalTransitionStyle = .crossDissolve
-
+        
         detailsVC.selectedDateText = shortDate(from: hour.dt)
         detailsVC.fullDateText = fullDate(from: hour.dt)
         detailsVC.temperatureText = "\(Int(hour.temp))°"
         detailsVC.descriptionText = hour.weather.first?.description ?? "Clear"
         detailsVC.highLowText = "H:\(Int(hour.temp))° L:\(Int(hour.temp))°"
-
+        
         present(detailsVC, animated: false)
     }
     func shortDate(from timestamp: Int?) -> String {
@@ -163,7 +175,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         formatter.dateFormat = "dd MMM yyyy"
         return formatter.string(from: date)
     }
-
+    
     func fullDate(from timestamp: Int?) -> String {
         guard let timestamp = timestamp else { return "No Date" }
         let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
@@ -172,16 +184,33 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return formatter.string(from: date)
     }
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-
+        
         let vc = CitiesViewController()
         vc.delegate = self
-
+        
         navigationController?.pushViewController(vc, animated: true)
-
+        
         return false
     }
     func didSelectCity(_ city: String) {
         updateCity(city)
+        loadWeather(for: city)
+    }
+    func loadWeather(for city: String) {
+        viewModel.loadWeather(for: city) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success:
+                self.currentCity = city
+                self.sampleHourly = self.viewModel.hourlyForecast
+                self.setupHeaderView()
+                self.tableView.reloadData()
+                
+            case .failure(let error):
+                print("Weather error:", error.localizedDescription)
+            }
+        }
     }
 }
 
@@ -210,7 +239,7 @@ extension ViewController {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-      
+        
         if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(
                 withIdentifier: "HourlyForecastCell",
@@ -219,7 +248,7 @@ extension ViewController {
             cell.onHourTapped = { [weak self] selectedHour in
                 self?.showDetails(for: selectedHour)
             }
-                cell.configure(with: sampleHourly)
+            cell.configure(with: sampleHourly)
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
             return cell
@@ -244,16 +273,15 @@ extension ViewController {
             let selectedDay = sampleDaily[dailyIndex]
             showDetails(for: selectedDay)
         }
-    
-
+        
+        
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-            if indexPath.row == 0 {
-                return 130
-            } else {
-                return 60
-            }
+        if indexPath.row == 0 {
+            return 130
+        } else {
+            return 60
+        }
     }
 }
-
