@@ -30,8 +30,6 @@ class DayDetailsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        super.viewDidLoad()
         setupUI()
         setupData()
         animateIn()
@@ -153,7 +151,6 @@ class DayDetailsViewController: UIViewController {
            })
            
            if let matched = closest {
-               print("Matched day:", matched.dt)
                 tempLabel.text = "\(Int(matched.temp.max))°"
                 descriptionLabel.text = matched.weather.first?.description.capitalized ?? "Clear"
                 highLowLabel.text = "H:\(Int(matched.temp.max))°  L:\(Int(matched.temp.min))°"
@@ -188,11 +185,11 @@ class DayDetailsViewController: UIViewController {
         
         let alert = UIAlertController(
             title: "Select Date",
-            message: "\n\n\n\n\n\n\n\n\n",
+            message: "\n\n\n\n\n\n\n\n\n\n\n\n\n",
             preferredStyle: .actionSheet
         )
         
-        datePicker.frame = CGRect(x: 10, y: 20, width: 320, height: 200)
+        datePicker.frame = CGRect(x: 10, y: 20, width: 320, height: 320)
         alert.view.addSubview(datePicker)
         
         let doneAction = UIAlertAction(title: "Done", style: .default) { _ in

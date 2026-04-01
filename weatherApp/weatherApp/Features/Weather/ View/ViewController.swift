@@ -19,17 +19,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var currentCity: String = "Riyadh"
     
     var sampleDaily: [DailyWeather] = [
-                DailyWeather(dt: 1767225600, temp: Temperature(min: 18, max: 27), weather: []),
-                DailyWeather(dt: 1767312000, temp: Temperature(min: 19, max: 28), weather: []),
-                DailyWeather(dt: 1767398400, temp: Temperature(min: 20, max: 29), weather: []),
-                DailyWeather(dt: 1767484800, temp: Temperature(min: 21, max: 30), weather: []),
-                DailyWeather(dt: 1767571200, temp: Temperature(min: 22, max: 31), weather: []),
-                DailyWeather(dt: 1767657600, temp: Temperature(min: 23, max: 32), weather: []),
-                DailyWeather(dt: 1767744000, temp: Temperature(min: 24, max: 33), weather: []),
-                DailyWeather(dt: 1767830400, temp: Temperature(min: 25, max: 34), weather: []),
-                DailyWeather(dt: 1767916800, temp: Temperature(min: 26, max: 35), weather: []),
-                DailyWeather(dt: 1768003200, temp: Temperature(min: 27, max: 36), weather: [])
-            ]
+        DailyWeather(dt: 1775088000, temp: Temperature(min: 18, max: 26), weather: [WeatherCondition(id: 1, main: "Clouds", description: "broken clouds", icon: "04d")]),
+        DailyWeather(dt: 1775174400, temp: Temperature(min: 19, max: 27), weather: [WeatherCondition(id: 2, main: "Clear", description: "clear sky", icon: "01d")]),
+        DailyWeather(dt: 1775260800, temp: Temperature(min: 20, max: 29), weather: [WeatherCondition(id: 3, main: "Rain", description: "light rain", icon: "10d")]),
+        DailyWeather(dt: 1775347200, temp: Temperature(min: 21, max: 30), weather: [WeatherCondition(id: 4, main: "Clouds", description: "scattered clouds", icon: "03d")]),
+        DailyWeather(dt: 1775433600, temp: Temperature(min: 22, max: 31), weather: [WeatherCondition(id: 5, main: "Clear", description: "sunny", icon: "01d")]),
+        DailyWeather(dt: 1775520000, temp: Temperature(min: 17, max: 25), weather: [WeatherCondition(id: 6, main: "Rain", description: "moderate rain", icon: "10d")]),
+        DailyWeather(dt: 1775606400, temp: Temperature(min: 16, max: 24), weather: [WeatherCondition(id: 7, main: "Clouds", description: "overcast clouds", icon: "04d")]),
+        DailyWeather(dt: 1775692800, temp: Temperature(min: 23, max: 33), weather: [WeatherCondition(id: 8, main: "Clear", description: "hot sunny", icon: "01d")]),
+        DailyWeather(dt: 1775779200, temp: Temperature(min: 21, max: 28), weather: [WeatherCondition(id: 9, main: "Clouds", description: "few clouds", icon: "02d")]),
+        DailyWeather(dt: 1775865600, temp: Temperature(min: 20, max: 27), weather: [WeatherCondition(id: 10, main: "Clear", description: "clear sky", icon: "01d")])
+    ]
     
     var sampleHourly = [
         HourlyWeather(dt: 1718874000, temp: 27, weather: []),
@@ -159,13 +159,16 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let detailsVC = DayDetailsViewController()
         detailsVC.modalPresentationStyle = .overFullScreen
         detailsVC.modalTransitionStyle = .crossDissolve
-        
+        detailsVC.dailyData = sampleDaily
         detailsVC.selectedDateText = shortDate(from: hour.dt)
         detailsVC.fullDateText = fullDate(from: hour.dt)
-        detailsVC.temperatureText = "\(Int(hour.temp))°"
-        detailsVC.descriptionText = hour.weather.first?.description ?? "Clear"
-        detailsVC.highLowText = "H:\(Int(hour.temp))° L:\(Int(hour.temp))°"
-        
+        if let matched = sampleDaily.min(by: {
+               abs(Double($0.dt - hour.dt)) < abs(Double($1.dt - hour.dt))
+        }) {
+            detailsVC.temperatureText = "\(Int(matched.temp.max))°"
+            detailsVC.descriptionText = matched.weather.first?.description ?? "Clear"
+            detailsVC.highLowText = "H:\(Int(matched.temp.max))° L:\(Int(matched.temp.min))°"
+        }
         present(detailsVC, animated: false)
     }
     func shortDate(from timestamp: Int?) -> String {
