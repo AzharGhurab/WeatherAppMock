@@ -10,7 +10,12 @@ import Foundation
 class WeatherService {
     
     
-    private let apiKey = "d0117fb28765bf990e5f494cb1799cad"
+    private var apiKey: String {
+        guard let key = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String else {
+            fatalError("API_KEY not found")
+        }
+        return key
+    }
     
     func fetchCoordinates(for city: String,
                           completion: @escaping (Result<(Double, Double), Error>) -> Void) {
