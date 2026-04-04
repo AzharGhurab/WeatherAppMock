@@ -10,14 +10,19 @@ extension UIView {
     
     func roundCorners(_ radius: CGFloat) {
         self.layer.cornerRadius = radius
-        self.layer.masksToBounds = true
+        self.layer.masksToBounds = false
     }
     
-    func addShadow() {
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOpacity = 0.2
-        self.layer.shadowOffset = CGSize(width: 0, height: 2)
-        self.layer.shadowRadius = 4
+    func addShadow(
+        color: UIColor = .black,
+        opacity: Float = 0.2,
+        offset: CGSize = CGSize(width: 0, height: 2),
+        radius: CGFloat = 4
+    ) {
+        self.layer.shadowColor = color.cgColor
+        self.layer.shadowOpacity = opacity
+        self.layer.shadowOffset = offset
+        self.layer.shadowRadius = radius
     }
 }
 
