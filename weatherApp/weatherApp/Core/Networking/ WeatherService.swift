@@ -32,9 +32,28 @@ class WeatherService {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, _, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             
             if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: 500,
+                    userInfo: [NSLocalizedDescriptionKey: "Invalid server response"]
+                )
+                completion(.failure(error))
+                return
+            }
+            
+            guard 200...299 ~= httpResponse.statusCode else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: httpResponse.statusCode,
+                    userInfo: [NSLocalizedDescriptionKey: "Server error: \(httpResponse.statusCode)"]
+                )
                 completion(.failure(error))
                 return
             }
@@ -87,9 +106,28 @@ class WeatherService {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, _, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             
             if let error = error {
+                completion(.failure(error))
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: 500,
+                    userInfo: [NSLocalizedDescriptionKey: "Invalid server response"]
+                )
+                completion(.failure(error))
+                return
+            }
+            
+            guard 200...299 ~= httpResponse.statusCode else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: httpResponse.statusCode,
+                    userInfo: [NSLocalizedDescriptionKey: "Server error: \(httpResponse.statusCode)"]
+                )
                 completion(.failure(error))
                 return
             }
@@ -130,9 +168,29 @@ class WeatherService {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, _, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             
             if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: 500,
+                    userInfo: [NSLocalizedDescriptionKey: "Invalid server response"]
+                )
+                completion(.failure(error))
+                return
+            }
+            
+            guard 200...299 ~= httpResponse.statusCode else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: httpResponse.statusCode,
+                    userInfo: [NSLocalizedDescriptionKey: "Server error: \(httpResponse.statusCode)"]
+                )
                 completion(.failure(error))
                 return
             }

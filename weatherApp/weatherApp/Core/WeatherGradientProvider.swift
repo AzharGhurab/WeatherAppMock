@@ -12,12 +12,14 @@ enum WeatherGradientProvider {
         if isDay {
             return [
                 UIColor(red: 0.20, green: 0.40, blue: 0.80, alpha: 1).cgColor,
-                UIColor(red: 0.30, green: 0.55, blue: 0.90, alpha: 1).cgColor
+                UIColor(red: 0.30, green: 0.55, blue: 0.90, alpha: 1).cgColor,
+                UIColor(red: 0.70, green: 0.88, blue: 0.99, alpha: 1).cgColor
             ]
         } else {
             return [
                 UIColor(red: 0.05, green: 0.07, blue: 0.15, alpha: 1).cgColor,
-                UIColor(red: 0.10, green: 0.15, blue: 0.30, alpha: 1).cgColor
+                UIColor(red: 0.10, green: 0.15, blue: 0.30, alpha: 1).cgColor,
+                UIColor(red: 0.26, green: 0.33, blue: 0.57, alpha: 1).cgColor
             ]
         }
     }
