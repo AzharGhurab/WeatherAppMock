@@ -22,7 +22,15 @@ class WeatherService {
         
         let encodedCity = city.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? city
         let urlString = "https://api.openweathermap.org/geo/1.0/direct?q=\(encodedCity)&limit=1&appid=\(apiKey)"
-        guard let url = URL(string: urlString) else { return }
+        guard let url = URL(string: urlString) else {
+            let urlError = NSError(
+                domain: "WeatherService",
+                code: 400,
+                userInfo: [NSLocalizedDescriptionKey: "Invalid coordinates URL"]
+            )
+            completion(.failure(urlError))
+            return
+        }
         
         URLSession.shared.dataTask(with: url) { data, _, error in
             
@@ -31,7 +39,16 @@ class WeatherService {
                 return
             }
             
-            guard let data = data else { return }
+            guard let data = data else {
+                
+                let noDataError = NSError(
+                    domain: "WeatherService",
+                    code: 500,
+                    userInfo: [NSLocalizedDescriptionKey: "No data returned for coordinates request"]
+                )
+                completion(.failure(noDataError))
+                return
+            }
             do {
                 let result = try JSONDecoder().decode([GeoResponse].self, from: data)
                 
@@ -60,7 +77,15 @@ class WeatherService {
                       completion: @escaping (Result<WeatherResponse, Error>) -> Void) {
         
         let urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=metric"
-        guard let url = URL(string: urlString) else { return }
+        guard let url = URL(string: urlString) else {
+            let urlError = NSError(
+                domain: "WeatherService",
+                code: 400,
+                userInfo: [NSLocalizedDescriptionKey: "Invalid weather URL"]
+            )
+            completion(.failure(urlError))
+            return
+        }
         
         URLSession.shared.dataTask(with: url) { data, _, error in
             
@@ -69,7 +94,15 @@ class WeatherService {
                 return
             }
             
-            guard let data = data else { return }
+            guard let data = data else {
+                let noDataError = NSError(
+                    domain: "WeatherService",
+                    code: 500,
+                    userInfo: [NSLocalizedDescriptionKey: "No data returned for weather request"]
+                )
+                completion(.failure(noDataError))
+                return
+            }
             
             do {
                 let weather = try JSONDecoder().decode(WeatherResponse.self, from: data)
@@ -87,7 +120,15 @@ class WeatherService {
         
         let urlString = "https://api.openweathermap.org/data/2.5/forecast?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=metric"
         
-        guard let url = URL(string: urlString) else { return }
+        guard let url = URL(string: urlString) else {
+            let error = NSError(
+                domain: "WeatherService",
+                code: 400,
+                userInfo: [NSLocalizedDescriptionKey: "Invalid hourly forecast URL"]
+            )
+            completion(.failure(error))
+            return
+        }
         
         URLSession.shared.dataTask(with: url) { data, _, error in
             
@@ -95,8 +136,15 @@ class WeatherService {
                 completion(.failure(error))
                 return
             }
-            
-            guard let data = data else { return }
+            guard let data = data else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: 500,
+                    userInfo: [NSLocalizedDescriptionKey: "No data returned for hourly forecast request"]
+                )
+                completion(.failure(error))
+                return
+            }
             
             do {
                 let forecastResponse = try JSONDecoder().decode(ForecastResponse.self, from: data)
