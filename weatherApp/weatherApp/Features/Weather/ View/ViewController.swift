@@ -141,11 +141,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func showDetails(for day: DailyWeather) {
-        let detailsVC = DayDetailsViewController()
+        let detailsVC = DayDetailsViewController(dailyData: sampleDaily)
         detailsVC.modalPresentationStyle = .overFullScreen
         detailsVC.modalTransitionStyle = .crossDissolve
-        
-        detailsVC.dailyData = sampleDaily
         detailsVC.selectedDateText = shortDate(from: day.dt)
         detailsVC.fullDateText = fullDate(from: day.dt)
         detailsVC.temperatureText = "\(Int(day.temp.max))°"
@@ -156,10 +154,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func showDetails(for hour: HourlyWeather) {
-        let detailsVC = DayDetailsViewController()
+        let detailsVC = DayDetailsViewController(dailyData: sampleDaily)
         detailsVC.modalPresentationStyle = .overFullScreen
         detailsVC.modalTransitionStyle = .crossDissolve
-        detailsVC.dailyData = sampleDaily
         detailsVC.selectedDateText = shortDate(from: hour.dt)
         detailsVC.fullDateText = fullDate(from: hour.dt)
         if let matched = sampleDaily.min(by: {

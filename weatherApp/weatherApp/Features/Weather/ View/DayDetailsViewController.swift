@@ -9,7 +9,15 @@ import UIKit
 
 class DayDetailsViewController: UIViewController {
     
-    var dailyData: [DailyWeather] = []
+    let dailyData: [DailyWeather]
+       init(dailyData: [DailyWeather]) {
+           self.dailyData = dailyData
+           super.init(nibName: nil, bundle: nil)
+       }
+
+       required init?(coder: NSCoder) {
+           fatalError("init(coder:) has not been implemented")
+       }
     private let dimView = UIView()
     private let containerView = UIView()
     
@@ -88,13 +96,29 @@ class DayDetailsViewController: UIViewController {
         highLowLabel.font = .systemFont(ofSize: 18, weight: .regular)
         highLowLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        let topStackView = UIStackView(arrangedSubviews: [dayLabel, tempLabel])
+              topStackView.axis = .vertical
+              topStackView.alignment = .leading
+              topStackView.spacing = 24
+              topStackView.translatesAutoresizingMaskIntoConstraints = false
+              
+              let bottomStackView = UIStackView(arrangedSubviews: [descriptionLabel, highLowLabel])
+              bottomStackView.axis = .vertical
+              bottomStackView.alignment = .leading
+              bottomStackView.spacing = 10
+              bottomStackView.translatesAutoresizingMaskIntoConstraints = false
+              
+              let mainStackView = UIStackView(arrangedSubviews: [topStackView, bottomStackView])
+              mainStackView.axis = .vertical
+              mainStackView.alignment = .leading
+              mainStackView.spacing = 20
+              mainStackView.translatesAutoresizingMaskIntoConstraints = false
+              
+         
         containerView.addSubview(titleLabel)
         containerView.addSubview(closeButton)
         containerView.addSubview(dateButton)
-        containerView.addSubview(dayLabel)
-        containerView.addSubview(tempLabel)
-        containerView.addSubview(descriptionLabel)
-        containerView.addSubview(highLowLabel)
+        containerView.addSubview(mainStackView)
         
         NSLayoutConstraint.activate([
             dimView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -119,19 +143,11 @@ class DayDetailsViewController: UIViewController {
             dateButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -24),
             dateButton.heightAnchor.constraint(equalToConstant: 44),
             
-            dayLabel.topAnchor.constraint(equalTo: dateButton.bottomAnchor, constant: 28),
-            dayLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 24),
-            
-            tempLabel.topAnchor.constraint(equalTo: dayLabel.bottomAnchor, constant: 24),
-            tempLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 24),
-            
-            descriptionLabel.topAnchor.constraint(equalTo: tempLabel.bottomAnchor, constant: 20),
-            descriptionLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 24),
-            
-            highLowLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 10),
-            highLowLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 24)
-        ])
-    }
+            mainStackView.topAnchor.constraint(equalTo: dateButton.bottomAnchor, constant: 28),
+            mainStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 24),
+            mainStackView.trailingAnchor.constraint(lessThanOrEqualTo: containerView.trailingAnchor, constant: -24)
+               ])
+           }
     
     private func setupData() {
         dateButton.setTitle(selectedDateText, for: .normal)
