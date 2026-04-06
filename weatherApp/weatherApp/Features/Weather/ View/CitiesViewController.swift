@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CitiesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+class CitiesViewController: UIViewController {
     
     weak var delegate: CitySelectionDelegate?
     
@@ -33,19 +33,22 @@ class CitiesViewController: UIViewController, UITableViewDataSource, UITableView
         setupTableView()
     }
     
-    func setupSearchBar() {
+    private func setupSearchBar() {
         searchBar.placeholder = "Search city"
         searchBar.delegate = self
         navigationItem.titleView = searchBar
     }
     
-    func setupTableView() {
+    private func setupTableView() {
         tableView.frame = view.bounds
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         view.addSubview(tableView)
     }
+}
+
+extension CitiesViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         filteredCities.count
@@ -65,6 +68,8 @@ class CitiesViewController: UIViewController, UITableViewDataSource, UITableView
         
         navigationController?.popViewController(animated: true)
     }
+}
+extension CitiesViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
