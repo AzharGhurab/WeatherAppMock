@@ -195,38 +195,28 @@ class DayDetailsViewController: UIViewController {
         showDatePicker()
     }
     private func showDatePicker() {
-        let datePicker = UIDatePicker()
-        datePicker.datePickerMode = .date
-        datePicker.preferredDatePickerStyle = .inline
         
-        let alert = UIAlertController(
-            title: "Select Date",
-            message: "\n\n\n\n\n\n\n\n\n\n\n\n\n",
-            preferredStyle: .actionSheet
-        )
+        let vc = DatePickerViewController()
+        vc.modalPresentationStyle = .overFullScreen
         
-        datePicker.frame = CGRect(x: 10, y: 20, width: 320, height: 320)
-        alert.view.addSubview(datePicker)
-        
-        let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
+        vc.onDateSelected = { [weak self] date in
+            guard let self = self else { return }
+            
             let shortFormatter = DateFormatter()
             shortFormatter.dateFormat = "dd MMM yyyy"
             
             let fullFormatter = DateFormatter()
             fullFormatter.dateFormat = "EEEE, dd MMMM yyyy"
             
-            self.selectedDateText = shortFormatter.string(from: datePicker.date)
-            self.fullDateText = fullFormatter.string(from: datePicker.date)
+            self.selectedDateText = shortFormatter.string(from: date)
+            self.fullDateText = fullFormatter.string(from: date)
             
             self.dateButton.setTitle(self.selectedDateText, for: .normal)
             self.dayLabel.text = self.fullDateText
-            self.updateUI(for: datePicker.date)
+            self.updateUI(for: date)
         }
         
-        alert.addAction(doneAction)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        present(alert, animated: true)
+        present(vc, animated: false)
     }
     
 }
