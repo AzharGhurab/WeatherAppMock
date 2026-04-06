@@ -16,6 +16,56 @@ class WeatherService {
         }
         return key
     }
+    private func request<T: Decodable>(
+        url: URL,
+        completion: @escaping (Result<T, Error>) -> Void
+    ) {
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: 500,
+                    userInfo: [NSLocalizedDescriptionKey: "Invalid server response"]
+                )
+                completion(.failure(error))
+                return
+            }
+            
+            guard 200...299 ~= httpResponse.statusCode else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: httpResponse.statusCode,
+                    userInfo: [NSLocalizedDescriptionKey: "Server error: \(httpResponse.statusCode)"]
+                )
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                let error = NSError(
+                    domain: "WeatherService",
+                    code: 500,
+                    userInfo: [NSLocalizedDescriptionKey: "No data returned"]
+                )
+                completion(.failure(error))
+                return
+            }
+            
+            do {
+                let decoded = try JSONDecoder().decode(T.self, from: data)
+                completion(.success(decoded))
+            } catch {
+                completion(.failure(error))
+            }
+            
+        }.resume()
+    }
     
     func fetchCoordinates(for city: String,
                           completion: @escaping (Result<(Double, Double), Error>) -> Void) {
@@ -32,63 +82,24 @@ class WeatherService {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            guard let httpResponse = response as? HTTPURLResponse else {
-                let error = NSError(
-                    domain: "WeatherService",
-                    code: 500,
-                    userInfo: [NSLocalizedDescriptionKey: "Invalid server response"]
-                )
-                completion(.failure(error))
-                return
-            }
-            
-            guard 200...299 ~= httpResponse.statusCode else {
-                let error = NSError(
-                    domain: "WeatherService",
-                    code: httpResponse.statusCode,
-                    userInfo: [NSLocalizedDescriptionKey: "Server error: \(httpResponse.statusCode)"]
-                )
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                
-                let noDataError = NSError(
-                    domain: "WeatherService",
-                    code: 500,
-                    userInfo: [NSLocalizedDescriptionKey: "No data returned for coordinates request"]
-                )
-                completion(.failure(noDataError))
-                return
-            }
-            do {
-                let result = try JSONDecoder().decode([GeoResponse].self, from: data)
-                
-                guard let first = result.first else {
-                    let notFoundError = NSError(
+        request(url: url) { (result: Result<[GeoResponse], Error>) in
+            switch result {
+            case .success(let locations):
+                guard let first = locations.first else {
+                    let error = NSError(
                         domain: "WeatherService",
                         code: 404,
                         userInfo: [NSLocalizedDescriptionKey: "City not found"]
                     )
-                    completion(.failure(notFoundError))
+                    completion(.failure(error))
                     return
                 }
-                
                 completion(.success((first.lat, first.lon)))
                 
-            } catch {
-                
+            case .failure(let error):
                 completion(.failure(error))
             }
-            
-        }.resume()
+        }
     }
     
     func fetchWeather(lat: Double,
@@ -105,51 +116,7 @@ class WeatherService {
             completion(.failure(urlError))
             return
         }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            guard let httpResponse = response as? HTTPURLResponse else {
-                let error = NSError(
-                    domain: "WeatherService",
-                    code: 500,
-                    userInfo: [NSLocalizedDescriptionKey: "Invalid server response"]
-                )
-                completion(.failure(error))
-                return
-            }
-            
-            guard 200...299 ~= httpResponse.statusCode else {
-                let error = NSError(
-                    domain: "WeatherService",
-                    code: httpResponse.statusCode,
-                    userInfo: [NSLocalizedDescriptionKey: "Server error: \(httpResponse.statusCode)"]
-                )
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                let noDataError = NSError(
-                    domain: "WeatherService",
-                    code: 500,
-                    userInfo: [NSLocalizedDescriptionKey: "No data returned for weather request"]
-                )
-                completion(.failure(noDataError))
-                return
-            }
-            
-            do {
-                let weather = try JSONDecoder().decode(WeatherResponse.self, from: data)
-                completion(.success(weather))
-            } catch {
-                completion(.failure(error))
-            }
-            
-        }.resume()
+        request(url: url, completion: completion)
     }
     
     func fetchHourlyForecast(lat: Double,
@@ -168,45 +135,9 @@ class WeatherService {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                let error = NSError(
-                    domain: "WeatherService",
-                    code: 500,
-                    userInfo: [NSLocalizedDescriptionKey: "Invalid server response"]
-                )
-                completion(.failure(error))
-                return
-            }
-            
-            guard 200...299 ~= httpResponse.statusCode else {
-                let error = NSError(
-                    domain: "WeatherService",
-                    code: httpResponse.statusCode,
-                    userInfo: [NSLocalizedDescriptionKey: "Server error: \(httpResponse.statusCode)"]
-                )
-                completion(.failure(error))
-                return
-            }
-            guard let data = data else {
-                let error = NSError(
-                    domain: "WeatherService",
-                    code: 500,
-                    userInfo: [NSLocalizedDescriptionKey: "No data returned for hourly forecast request"]
-                )
-                completion(.failure(error))
-                return
-            }
-            
-            do {
-                let forecastResponse = try JSONDecoder().decode(ForecastResponse.self, from: data)
-                
+        request(url: url) { (result: Result<ForecastResponse, Error>) in
+            switch result {
+            case .success(let forecastResponse):
                 let hourlyItems = forecastResponse.list.prefix(8).map {
                     HourlyWeather(
                         dt: $0.dt,
@@ -214,14 +145,11 @@ class WeatherService {
                         weather: $0.weather
                     )
                 }
-                
                 completion(.success(Array(hourlyItems)))
                 
-            } catch {
+            case .failure(let error):
                 completion(.failure(error))
             }
-            
-        }.resume()
+        }
     }
 }
-
