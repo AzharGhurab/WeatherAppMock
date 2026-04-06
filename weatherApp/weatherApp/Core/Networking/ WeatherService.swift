@@ -70,9 +70,7 @@ class WeatherService {
     func fetchCoordinates(for city: String,
                           completion: @escaping (Result<(Double, Double), Error>) -> Void) {
         
-        let encodedCity = city.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? city
-        let urlString = "https://api.openweathermap.org/geo/1.0/direct?q=\(encodedCity)&limit=1&appid=\(apiKey)"
-        guard let url = URL(string: urlString) else {
+        guard let url = WeatherEndpoint.coordinates(city: city, apiKey: apiKey).url else {
             let urlError = NSError(
                 domain: "WeatherService",
                 code: 400,
@@ -106,8 +104,7 @@ class WeatherService {
                       lon: Double,
                       completion: @escaping (Result<WeatherResponse, Error>) -> Void) {
         
-        let urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=metric"
-        guard let url = URL(string: urlString) else {
+        guard let url = WeatherEndpoint.currentWeather(lat: lat, lon: lon, apiKey: apiKey).url else {
             let urlError = NSError(
                 domain: "WeatherService",
                 code: 400,
@@ -123,9 +120,7 @@ class WeatherService {
                              lon: Double,
                              completion: @escaping (Result<[HourlyWeather], Error>) -> Void) {
         
-        let urlString = "https://api.openweathermap.org/data/2.5/forecast?lat=\(lat)&lon=\(lon)&appid=\(apiKey)&units=metric"
-        
-        guard let url = URL(string: urlString) else {
+        guard let url = WeatherEndpoint.hourlyForecast(lat: lat, lon: lon, apiKey: apiKey).url  else {
             let error = NSError(
                 domain: "WeatherService",
                 code: 400,
