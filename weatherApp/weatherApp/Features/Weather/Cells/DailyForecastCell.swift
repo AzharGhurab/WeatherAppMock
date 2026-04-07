@@ -20,10 +20,6 @@ class DailyForecastCell: UITableViewCell {
         contentView.backgroundColor = .clear
         selectionStyle = .none
     }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
     func configure(with data: DailyWeather) {
         dayLabel.text = formatDay(from: data.dt)
         minTempLabel.text = "\(Int(data.temp.min))°"
