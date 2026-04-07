@@ -17,6 +17,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let backgroundGradient = CAGradientLayer()
     let searchBar = UISearchBar()
     var currentCity: String = "Riyadh"
+    var hourlyData: [HourlyWeather] = []
     
     var sampleDaily: [DailyWeather] = [
         DailyWeather(dt: 1775088000, temp: Temperature(min: 18, max: 26), weather: [WeatherCondition(id: 1, main: "Clouds", description: "broken clouds", icon: "04d")]),
@@ -29,18 +30,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         DailyWeather(dt: 1775692800, temp: Temperature(min: 23, max: 33), weather: [WeatherCondition(id: 8, main: "Clear", description: "hot sunny", icon: "01d")]),
         DailyWeather(dt: 1775779200, temp: Temperature(min: 21, max: 28), weather: [WeatherCondition(id: 9, main: "Clouds", description: "few clouds", icon: "02d")]),
         DailyWeather(dt: 1775865600, temp: Temperature(min: 20, max: 27), weather: [WeatherCondition(id: 10, main: "Clear", description: "clear sky", icon: "01d")])
-    ]
-    
-    var sampleHourly = [
-        HourlyWeather(dt: 1718874000, temp: 27, weather: []),
-        HourlyWeather(dt: 1718877600, temp: 28, weather: []),
-        HourlyWeather(dt: 1718881200, temp: 29, weather: []),
-        HourlyWeather(dt: 1718884800, temp: 30, weather: []),
-        HourlyWeather(dt: 1718888400, temp: 31, weather: []),
-        HourlyWeather(dt: 1718892000, temp: 30, weather: []),
-        HourlyWeather(dt: 1718895600, temp: 29, weather: []),
-        HourlyWeather(dt: 1718899200, temp: 28, weather: []),
-        HourlyWeather(dt: 1718902800, temp: 27, weather: [])
     ]
     
     override func viewDidLoad() {
@@ -207,7 +196,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             switch result {
             case .success:
                 self.currentCity = city
-                self.sampleHourly = self.viewModel.hourlyForecast
+                self.hourlyData = self.viewModel.hourlyForecast
                 self.setupHeaderView()
                 self.tableView.reloadData()
                 
@@ -252,7 +241,7 @@ extension ViewController {
             cell.onHourTapped = { [weak self] selectedHour in
                 self?.showDetails(for: selectedHour)
             }
-            cell.configure(with: sampleHourly)
+            cell.configure(with: hourlyData)
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
             return cell
