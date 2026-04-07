@@ -10,7 +10,7 @@ import UIKit
 protocol CitySelectionDelegate: AnyObject {
     func didSelectCity(_ city: String)
 }
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate ,CitySelectionDelegate {
+class WeatherViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate ,CitySelectionDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     let viewModel = WeatherViewModel()
@@ -136,7 +136,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                minTemp: day.temp.min,
                description: day.weather.first?.description ?? "Clear"
                )
-        let detailsVC = DayDetailsViewController(model: model, dailyData: sampleDaily)
+        let detailsViewModel = DayDetailsViewModel(model: model, dailyData: sampleDaily)
+        let detailsVC = DayDetailsViewController(viewModel: detailsViewModel)
+
         detailsVC.modalPresentationStyle = .overFullScreen
         detailsVC.modalTransitionStyle = .crossDissolve
        
@@ -153,7 +155,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 minTemp: matched.temp.min,
                 description: matched.weather.first?.description ?? "Clear"
             )
-            let detailsVC = DayDetailsViewController(model: model, dailyData: sampleDaily)
+            let detailsViewModel = DayDetailsViewModel(model: model, dailyData: sampleDaily)
+            let detailsVC = DayDetailsViewController(viewModel: detailsViewModel)
             detailsVC.modalPresentationStyle = .overFullScreen
             detailsVC.modalTransitionStyle = .crossDissolve
             
@@ -207,7 +210,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
 }
 
-extension ViewController {
+extension WeatherViewController {
     
     func setupTableView() {
         tableView.dataSource = self

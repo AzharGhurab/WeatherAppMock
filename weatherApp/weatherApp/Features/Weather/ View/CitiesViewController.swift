@@ -16,7 +16,7 @@ class CitiesViewController: UIViewController {
     
     var cities = [
         "Riyadh","Jeddah","Makkah","Madinah","Dammam",
-        "Abha","Tabuk","Taif","Hail","Najran","Jazan"
+        "Abha","Tabuk","Taif","Hail","Najran","Jazan","London","Paris","New York","Tokyo"
     ]
     
     var filteredCities: [String] = []
