@@ -9,8 +9,10 @@ import UIKit
 
 class DayDetailsViewController: UIViewController {
     
+    let model: DayDetailsModel
     let dailyData: [DailyWeather]
-       init(dailyData: [DailyWeather]) {
+       init(model: DayDetailsModel,dailyData: [DailyWeather]) {
+           self.model = model
            self.dailyData = dailyData
            super.init(nibName: nil, bundle: nil)
        }
@@ -29,12 +31,6 @@ class DayDetailsViewController: UIViewController {
     private let tempLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let highLowLabel = UILabel()
-    
-    var selectedDateText: String = "16 Mar 2026"
-    var fullDateText: String = "Monday, 16 March 2026"
-    var temperatureText: String = "12°"
-    var descriptionText: String = "Mainly Clear"
-    var highLowText: String = "H:21° L:12°"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,7 +67,6 @@ class DayDetailsViewController: UIViewController {
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
         
-        dateButton.setTitle(selectedDateText, for: .normal)
         dateButton.setTitleColor(.white, for: .normal)
         dateButton.backgroundColor = .black
         dateButton.layer.cornerRadius = 22
@@ -150,12 +145,22 @@ class DayDetailsViewController: UIViewController {
            }
     
     private func setupData() {
-        dateButton.setTitle(selectedDateText, for: .normal)
-        dayLabel.text = fullDateText
-        tempLabel.text = temperatureText
-        descriptionLabel.text = descriptionText
-        highLowLabel.text = highLowText
-    }
+        let shortFormatter = DateFormatter()
+            shortFormatter.dateFormat = "dd MMM yyyy"
+
+            let fullFormatter = DateFormatter()
+            fullFormatter.dateFormat = "EEEE, dd MMMM yyyy"
+
+            let selectedDateText = shortFormatter.string(from: model.date)
+            let fullDateText = fullFormatter.string(from: model.date)
+
+            dateButton.setTitle(selectedDateText, for: .normal)
+            dayLabel.text = fullDateText
+            
+            tempLabel.text = "\(Int(model.maxTemp))°"
+            descriptionLabel.text = model.description.capitalized
+            highLowLabel.text = "H:\(Int(model.maxTemp))° L:\(Int(model.minTemp))°"
+        }
     func updateUI(for date: Date) {
             
         guard !dailyData.isEmpty else { return }
@@ -200,20 +205,8 @@ class DayDetailsViewController: UIViewController {
         vc.modalPresentationStyle = .overFullScreen
         
         vc.onDateSelected = { [weak self] date in
-            guard let self = self else { return }
+            self?.updateUI(for: date)
             
-            let shortFormatter = DateFormatter()
-            shortFormatter.dateFormat = "dd MMM yyyy"
-            
-            let fullFormatter = DateFormatter()
-            fullFormatter.dateFormat = "EEEE, dd MMMM yyyy"
-            
-            self.selectedDateText = shortFormatter.string(from: date)
-            self.fullDateText = fullFormatter.string(from: date)
-            
-            self.dateButton.setTitle(self.selectedDateText, for: .normal)
-            self.dayLabel.text = self.fullDateText
-            self.updateUI(for: date)
         }
         
         present(vc, animated: false)

@@ -60,4 +60,10 @@ struct ForecastItem: Decodable {
 struct ForecastMain: Decodable {
     let temp: Double
 }
+struct DayDetailsModel {
+    let date: Date
+    let maxTemp: Double
+    let minTemp: Double
+    let description: String
+}
 

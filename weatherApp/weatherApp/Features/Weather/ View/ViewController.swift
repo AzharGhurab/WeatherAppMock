@@ -141,32 +141,36 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func showDetails(for day: DailyWeather) {
-        let detailsVC = DayDetailsViewController(dailyData: sampleDaily)
+        let model = DayDetailsModel(
+               date: Date(timeIntervalSince1970: TimeInterval(day.dt)),
+               maxTemp: day.temp.max,
+               minTemp: day.temp.min,
+               description: day.weather.first?.description ?? "Clear"
+               )
+        let detailsVC = DayDetailsViewController(model: model, dailyData: sampleDaily)
         detailsVC.modalPresentationStyle = .overFullScreen
         detailsVC.modalTransitionStyle = .crossDissolve
-        detailsVC.selectedDateText = shortDate(from: day.dt)
-        detailsVC.fullDateText = fullDate(from: day.dt)
-        detailsVC.temperatureText = "\(Int(day.temp.max))°"
-        detailsVC.descriptionText = day.weather.first?.description ?? "Clear"
-        detailsVC.highLowText = "H:\(Int(day.temp.max))° L:\(Int(day.temp.min))°"
-        
+       
         present(detailsVC, animated: false)
     }
     
     func showDetails(for hour: HourlyWeather) {
-        let detailsVC = DayDetailsViewController(dailyData: sampleDaily)
-        detailsVC.modalPresentationStyle = .overFullScreen
-        detailsVC.modalTransitionStyle = .crossDissolve
-        detailsVC.selectedDateText = shortDate(from: hour.dt)
-        detailsVC.fullDateText = fullDate(from: hour.dt)
         if let matched = sampleDaily.min(by: {
-               abs(Double($0.dt - hour.dt)) < abs(Double($1.dt - hour.dt))
+            abs(Double($0.dt - hour.dt)) < abs(Double($1.dt - hour.dt))
         }) {
-            detailsVC.temperatureText = "\(Int(matched.temp.max))°"
-            detailsVC.descriptionText = matched.weather.first?.description ?? "Clear"
-            detailsVC.highLowText = "H:\(Int(matched.temp.max))° L:\(Int(matched.temp.min))°"
+            let model = DayDetailsModel(
+                date: Date(timeIntervalSince1970: TimeInterval(hour.dt)),
+                maxTemp: matched.temp.max,
+                minTemp: matched.temp.min,
+                description: matched.weather.first?.description ?? "Clear"
+            )
+            let detailsVC = DayDetailsViewController(model: model, dailyData: sampleDaily)
+            detailsVC.modalPresentationStyle = .overFullScreen
+            detailsVC.modalTransitionStyle = .crossDissolve
+            
+            
+            present(detailsVC, animated: false)
         }
-        present(detailsVC, animated: false)
     }
     func shortDate(from timestamp: Int?) -> String {
         guard let timestamp = timestamp else { return "No Date" }
