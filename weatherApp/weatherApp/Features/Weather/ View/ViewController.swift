@@ -18,23 +18,11 @@ class WeatherViewController: UIViewController, UITableViewDataSource, UITableVie
     let searchBar = UISearchBar()
     var currentCity: String = "Riyadh"
     var hourlyData: [HourlyWeather] = []
-    
-    var sampleDaily: [DailyWeather] = [
-        DailyWeather(dt: 1775088000, temp: Temperature(min: 18, max: 26), weather: [WeatherCondition(id: 1, main: "Clouds", description: "broken clouds", icon: "04d")]),
-        DailyWeather(dt: 1775174400, temp: Temperature(min: 19, max: 27), weather: [WeatherCondition(id: 2, main: "Clear", description: "clear sky", icon: "01d")]),
-        DailyWeather(dt: 1775260800, temp: Temperature(min: 20, max: 29), weather: [WeatherCondition(id: 3, main: "Rain", description: "light rain", icon: "10d")]),
-        DailyWeather(dt: 1775347200, temp: Temperature(min: 21, max: 30), weather: [WeatherCondition(id: 4, main: "Clouds", description: "scattered clouds", icon: "03d")]),
-        DailyWeather(dt: 1775433600, temp: Temperature(min: 22, max: 31), weather: [WeatherCondition(id: 5, main: "Clear", description: "sunny", icon: "01d")]),
-        DailyWeather(dt: 1775520000, temp: Temperature(min: 17, max: 25), weather: [WeatherCondition(id: 6, main: "Rain", description: "moderate rain", icon: "10d")]),
-        DailyWeather(dt: 1775606400, temp: Temperature(min: 16, max: 24), weather: [WeatherCondition(id: 7, main: "Clouds", description: "overcast clouds", icon: "04d")]),
-        DailyWeather(dt: 1775692800, temp: Temperature(min: 23, max: 33), weather: [WeatherCondition(id: 8, main: "Clear", description: "hot sunny", icon: "01d")]),
-        DailyWeather(dt: 1775779200, temp: Temperature(min: 21, max: 28), weather: [WeatherCondition(id: 9, main: "Clouds", description: "few clouds", icon: "02d")]),
-        DailyWeather(dt: 1775865600, temp: Temperature(min: 20, max: 27), weather: [WeatherCondition(id: 10, main: "Clear", description: "clear sky", icon: "01d")])
-    ]
+    var sampleDaily: [DailyWeather] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        sampleDaily = LocalJSONLoader.loadDailyWeather()
         view.backgroundColor = .clear
         navigationController?.setNavigationBarHidden(false, animated: false)
         setupTableView()
