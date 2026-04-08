@@ -7,11 +7,19 @@
 
 import UIKit
 
+private enum WeatherConditionType: String {
+    case clear = "Clear"
+    case clouds = "Clouds"
+    case rain = "Rain"
+}
+
 class HourlyItemCell: UICollectionViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var weatherImageView: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
     
+    private let dayStartHour = 6
+    private let dayEndHour = 18
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -22,25 +30,24 @@ class HourlyItemCell: UICollectionViewCell {
             timeLabel.text = "Now"
             timeLabel.font = UIFont.boldSystemFont(ofSize: 20)
         } else {
-            timeLabel.text = formatHour(from: model.dt)
+            timeLabel.text = model.dt.toTimeString()
             timeLabel.font = UIFont.systemFont(ofSize: 17)
         }
         
         temperatureLabel.text = "\(Int(model.temp))°"
-        let condition = model.weather.first?.main ?? ""
         
-        let date = Date(timeIntervalSince1970: TimeInterval(model.dt))
-        let hour = Calendar.current.component(.hour, from: date)
-        let isDay = hour >= 6 && hour <= 18
+        let condition = WeatherConditionType(rawValue: model.weather.first?.main ?? "")
+        let hour = Calendar.current.component(.hour, from: model.dt.toDate())
+        let isDay = hour >= dayStartHour && hour <= dayEndHour
         
         switch condition {
-        case "Clear":
+        case .clear:
             weatherImageView.image = UIImage(systemName: isDay ? "sun.max.fill" : "moon.stars.fill")
             
-        case "Clouds":
+        case .clouds:
             weatherImageView.image = UIImage(systemName: isDay ? "cloud.sun.fill" : "cloud.moon.fill")
             
-        case "Rain":
+        case .rain:
             weatherImageView.image = UIImage(systemName: "cloud.rain.fill")
             
         default:
@@ -49,15 +56,7 @@ class HourlyItemCell: UICollectionViewCell {
         
         weatherImageView.tintColor = .white
     }
-    
-    private func formatHour(from timestamp: Int) -> String {
-        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "ha"
-        return formatter.string(from: date)
-    }
-    
-    private func loadImage(icon: String) {
+ private func loadImage(icon: String) {
         let urlString = "https://openweathermap.org/img/wn/\(icon)@2x.png"
         
         guard let url = URL(string: urlString) else { return }
