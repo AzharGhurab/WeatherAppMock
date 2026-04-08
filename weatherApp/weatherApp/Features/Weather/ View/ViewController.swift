@@ -131,7 +131,7 @@ class WeatherViewController: UIViewController, UITableViewDataSource, UITableVie
     
     func showDetails(for day: DailyWeather) {
         let model = DayDetailsModel(
-               date: Date(timeIntervalSince1970: TimeInterval(day.dt)),
+               date: day.dt.toDate(),
                maxTemp: day.temp.max,
                minTemp: day.temp.min,
                description: day.weather.first?.description ?? "Clear"
@@ -150,7 +150,7 @@ class WeatherViewController: UIViewController, UITableViewDataSource, UITableVie
             abs(Double($0.dt - hour.dt)) < abs(Double($1.dt - hour.dt))
         }) {
             let model = DayDetailsModel(
-                date: Date(timeIntervalSince1970: TimeInterval(hour.dt)),
+                date: hour.dt.toDate(),
                 maxTemp: matched.temp.max,
                 minTemp: matched.temp.min,
                 description: matched.weather.first?.description ?? "Clear"
@@ -163,21 +163,6 @@ class WeatherViewController: UIViewController, UITableViewDataSource, UITableVie
             
             present(detailsVC, animated: false)
         }
-    }
-    func shortDate(from timestamp: Int?) -> String {
-        guard let timestamp = timestamp else { return "No Date" }
-        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMM yyyy"
-        return formatter.string(from: date)
-    }
-    
-    func fullDate(from timestamp: Int?) -> String {
-        guard let timestamp = timestamp else { return "No Date" }
-        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, dd MMMM yyyy"
-        return formatter.string(from: date)
     }
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         

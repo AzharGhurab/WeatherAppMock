@@ -21,17 +21,11 @@ class DailyForecastCell: UITableViewCell {
         selectionStyle = .none
     }
     func configure(with data: DailyWeather) {
-        dayLabel.text = formatDay(from: data.dt)
+        let date = Date(timeIntervalSince1970: TimeInterval(data.dt))
+        dayLabel.text = date.toShortDayString()
         minTempLabel.text = "\(Int(data.temp.min))°"
         maxTempLabel.text = "\(Int(data.temp.max))°"
         weatherImageView.image = UIImage(systemName: "cloud.sun.fill")
-    }
-    
-    func formatDay(from timestamp: Int) -> String {
-        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "E"
-        return formatter.string(from: date)
     }
 }
 

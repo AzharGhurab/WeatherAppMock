@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HourlyForecastCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+class HourlyForecastCell: UITableViewCell{
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -22,7 +22,8 @@ class HourlyForecastCell: UITableViewCell, UICollectionViewDataSource, UICollect
         contentView.backgroundColor = .clear
         collectionView.backgroundColor = .clear
     }
-    
+}
+extension HourlyForecastCell{
     func setupCollectionView() {
         
         collectionView.delegate = self
@@ -44,14 +45,8 @@ class HourlyForecastCell: UITableViewCell, UICollectionViewDataSource, UICollect
         hourlyData = Array(data.sorted { $0.dt < $1.dt }.prefix(8))
         collectionView.reloadData()
     }
-    
-    func formatTime(from timestamp: Int) -> String {
-        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "ha"
-        return formatter.string(from: date)
-    }
+}
+extension HourlyForecastCell: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return hourlyData.count
@@ -66,15 +61,19 @@ class HourlyForecastCell: UITableViewCell, UICollectionViewDataSource, UICollect
         
         let item = hourlyData[indexPath.item]
         
-        cell.configure(with: item, isFirst: indexPath.item == 0) 
+        cell.configure(with: item, isFirst: indexPath.item == 0)
         return cell
     }
+}
+extension HourlyForecastCell: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 70, height: 100)
     }
+}
+extension HourlyForecastCell: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedHour = hourlyData[indexPath.item]
