@@ -14,10 +14,7 @@ class CitiesViewController: UIViewController {
     let tableView = UITableView()
     let searchBar = UISearchBar()
     
-    var cities = [
-        "Riyadh","Jeddah","Makkah","Madinah","Dammam",
-        "Abha","Tabuk","Taif","Hail","Najran","Jazan","London","Paris","New York","Tokyo"
-    ]
+    var cities: [String] = []
     
     var filteredCities: [String] = []
     
@@ -28,10 +25,26 @@ class CitiesViewController: UIViewController {
         title = "Search City"
         
         filteredCities = cities
-        
+        loadCities()
         setupSearchBar()
         setupTableView()
     }
+
+private func loadCities() {
+    guard let url = Bundle.main.url(forResource: "cities", withExtension: "json") else {
+        print("cities.json not found")
+        return
+    }
+    
+    do {
+        let data = try Data(contentsOf: url)
+        cities = try JSONDecoder().decode([String].self, from: data)
+        filteredCities = cities
+    } catch {
+        print("Failed to load cities: \(error)")
+    }
+}
+
     
     private func setupSearchBar() {
         searchBar.placeholder = "Search city"

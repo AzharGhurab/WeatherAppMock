@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  WeatherViewController.swift
 //  weatherApp
 //
 //  Created by Azhar Ghurab on 15/09/1447 AH.
@@ -10,7 +10,7 @@ import UIKit
 protocol CitySelectionDelegate: AnyObject {
     func didSelectCity(_ city: String)
 }
-class WeatherViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate ,CitySelectionDelegate {
+class WeatherViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     let viewModel = WeatherViewModel()
@@ -100,7 +100,8 @@ class WeatherViewController: UIViewController, UITableViewDataSource, UITableVie
             view.layer.insertSublayer(backgroundGradient, at: 0)
         }
     }
-    
+}
+extension WeatherViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let city = searchBar.text, !city.isEmpty else { return }
         print("City:", city)
@@ -161,6 +162,8 @@ class WeatherViewController: UIViewController, UITableViewDataSource, UITableVie
         
         return false
     }
+}
+extension WeatherViewController: CitySelectionDelegate {
     func didSelectCity(_ city: String) {
         updateCity(city)
         loadWeather(for: city)
@@ -202,7 +205,8 @@ extension WeatherViewController {
             forCellReuseIdentifier: "DailyForecastCell"
         )
     }
-    
+}
+extension WeatherViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1 + sampleDaily.count
     }
