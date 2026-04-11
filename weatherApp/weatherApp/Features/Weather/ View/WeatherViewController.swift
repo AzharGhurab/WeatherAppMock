@@ -41,6 +41,27 @@ class WeatherViewController: UIViewController {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
+}
+
+extension WeatherViewController {
+    
+    func setupTableView() {
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.contentInsetAdjustmentBehavior = .never
+        tableView.backgroundColor = .clear
+        tableView.tableFooterView = UIView()
+        
+        tableView.register(
+            UINib(nibName: "HourlyForecastCell", bundle: nil),
+            forCellReuseIdentifier: "HourlyForecastCell"
+        )
+        
+        tableView.register(
+            UINib(nibName: "DailyForecastCell", bundle: nil),
+            forCellReuseIdentifier: "DailyForecastCell"
+        )
+    }
     
     func setupHeaderView() {
         let containerView = UIView()
@@ -77,19 +98,6 @@ class WeatherViewController: UIViewController {
         tableView.tableHeaderView = containerView
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y
-        
-        if offsetY > 120 {
-            navigationItem.title = currentCity
-            
-            navigationController?.setNavigationBarHidden(false, animated: true)
-        } else {
-            navigationItem.title = ""
-            navigationController?.setNavigationBarHidden(true, animated: true)
-        }
-    }
-    
     func updateBackground() {
         let hour = Calendar.current.component(.hour, from: Date())
         let isDay = hour >= 5 && hour <= 18
@@ -100,22 +108,28 @@ class WeatherViewController: UIViewController {
             view.layer.insertSublayer(backgroundGradient, at: 0)
         }
     }
-}
-extension WeatherViewController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let city = searchBar.text, !city.isEmpty else { return }
-        print("City:", city)
-        updateCity(city)
-        searchBar.resignFirstResponder()
-    }
-    
-    func updateCity(_ city: String) {
+func updateCity(_ city: String) {
         currentCity = city
         
         if let header = tableView.tableHeaderView?.subviews.first(where: {$0 is CurrentWeatherCell}) as? CurrentWeatherCell {
             header.cityLabel.text = city
         }
-        
+    }
+func loadWeather(for city: String) {
+        viewModel.loadWeather(for: city) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success:
+                self.currentCity = city
+                self.hourlyData = self.viewModel.hourlyForecast
+                self.setupHeaderView()
+                self.tableView.reloadData()
+                
+            case .failure(let error):
+                print("Weather error:", error.localizedDescription)
+            }
+        }
     }
     
     func showDetails(for day: DailyWeather) {
@@ -153,6 +167,16 @@ extension WeatherViewController: UISearchBarDelegate {
             present(detailsVC, animated: false)
         }
     }
+}
+
+extension WeatherViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let city = searchBar.text, !city.isEmpty else { return }
+        updateCity(city)
+        searchBar.resignFirstResponder()
+    }
+    
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         
         let vc = CitiesViewController()
@@ -168,45 +192,21 @@ extension WeatherViewController: CitySelectionDelegate {
         updateCity(city)
         loadWeather(for: city)
     }
-    func loadWeather(for city: String) {
-        viewModel.loadWeather(for: city) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success:
-                self.currentCity = city
-                self.hourlyData = self.viewModel.hourlyForecast
-                self.setupHeaderView()
-                self.tableView.reloadData()
-                
-            case .failure(let error):
-                print("Weather error:", error.localizedDescription)
-            }
-        }
-    }
-}
-
-extension WeatherViewController {
-    
-    func setupTableView() {
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.contentInsetAdjustmentBehavior = .never
-        tableView.backgroundColor = .clear
-        tableView.tableFooterView = UIView()
-        
-        tableView.register(
-            UINib(nibName: "HourlyForecastCell", bundle: nil),
-            forCellReuseIdentifier: "HourlyForecastCell"
-        )
-        
-        tableView.register(
-            UINib(nibName: "DailyForecastCell", bundle: nil),
-            forCellReuseIdentifier: "DailyForecastCell"
-        )
-    }
 }
 extension WeatherViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        
+        if offsetY > 120 {
+            navigationItem.title = currentCity
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        } else {
+            navigationItem.title = ""
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        }
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1 + sampleDaily.count
     }
