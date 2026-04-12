@@ -9,7 +9,7 @@ import UIKit
 
 class DayDetailsViewController: UIViewController {
     
-    let viewModel: DayDetailsViewModel
+   private let viewModel: DayDetailsViewModel
     private let detailsView = DayDetailsView()
     
     init(viewModel: DayDetailsViewModel) {
@@ -53,7 +53,7 @@ extension DayDetailsViewController {
 
 extension DayDetailsViewController {
     
-    func animateIn() {
+   private func animateIn() {
         detailsView.containerView.transform = CGAffineTransform(translationX: 0, y: 500)
         detailsView.dimView.alpha = 0
         
@@ -75,16 +75,16 @@ extension DayDetailsViewController {
         showDatePicker()
     }
     private func showDatePicker() {
-        let vc = DatePickerViewController()
-        vc.modalPresentationStyle = .overFullScreen
+        let datePickerViewController = DatePickerViewController()
+        datePickerViewController.modalPresentationStyle = .overFullScreen
         
-        vc.onDateSelected = { [weak self] date in
+        datePickerViewController.onDateSelected = { [weak self] date in
             guard let self = self else { return }
             self.viewModel.updateSelectedDate(date)
             self.setupData()
         }
         
-        present(vc, animated: false)
+        present(datePickerViewController, animated: false)
     }
     
 }
