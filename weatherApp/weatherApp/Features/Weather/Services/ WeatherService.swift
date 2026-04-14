@@ -9,14 +9,14 @@ import Foundation
 
 final class WeatherService {
     
-    private var apiKey: String { NetworkManager.apiKey }
-    
+    private let requestBuilder = WeatherRequestBuilder(apiKey: NetworkManager.apiKey)
     func fetchCoordinates(
         for city: String,
         completion: @escaping (Result<(Double, Double), Error>) -> Void
     ) {
-        guard let request = URLRequest(
-            weatherEndpoint: .coordinates(city: city, apiKey: apiKey)
+        let apiRequest = WeatherEndpoint.coordinates(city: city)
+        guard let request = requestBuilder.makeRequest(
+            for: apiRequest
         ) else {
             completion(.failure(NetworkError.invalidURL))
             return
@@ -42,8 +42,9 @@ final class WeatherService {
         lon: Double,
         completion: @escaping (Result<WeatherResponse, Error>) -> Void
     ) {
-        guard let request = URLRequest(
-            weatherEndpoint: .currentWeather(lat: lat, lon: lon, apiKey: apiKey)
+        let apiRequest = WeatherEndpoint.currentWeather(lat: lat, lon: lon)
+        guard let request = requestBuilder.makeRequest(
+            for: apiRequest
         ) else {
             completion(.failure(NetworkError.invalidURL))
             return
@@ -57,9 +58,10 @@ final class WeatherService {
         lon: Double,
         completion: @escaping (Result<[HourlyWeather], Error>) -> Void
     ) {
-        guard let request = URLRequest(
-            weatherEndpoint: .hourlyForecast(lat: lat, lon: lon, apiKey: apiKey)
-        ) else {
+        let apiRequest = WeatherEndpoint.hourlyForecast(lat: lat, lon: lon)
+              guard let request = requestBuilder.makeRequest(
+                for: apiRequest 
+              ) else {
             completion(.failure(NetworkError.invalidURL))
             return
         }

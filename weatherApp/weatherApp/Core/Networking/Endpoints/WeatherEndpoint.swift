@@ -7,11 +7,11 @@
 
 import Foundation
 
-enum WeatherEndpoint {
+enum WeatherEndpoint : EndpointType {
     
-    case coordinates(city: String, apiKey: String)
-    case currentWeather(lat: Double, lon: Double, apiKey: String)
-    case hourlyForecast(lat: Double, lon: Double, apiKey: String)
+    case coordinates(city: String)
+    case currentWeather(lat: Double, lon: Double)
+    case hourlyForecast(lat: Double, lon: Double)
     
     var path: String {
         switch self {
@@ -24,32 +24,28 @@ enum WeatherEndpoint {
         }
     }
     
-    var queryItems: [URLQueryItem] {
+    var queryParameters: [String: String] {
         switch self {
-        case .coordinates(let city, let apiKey):
-            return [
-                URLQueryItem(name: "q", value: city),
-                URLQueryItem(name: "limit", value: "1"),
-                URLQueryItem(name: "appid", value: apiKey)
-            ]
+        case .coordinates(let city):
+            return ["q": city, "limit": "1"]
             
-        case .currentWeather(let lat, let lon, let apiKey):
-            return [
-                URLQueryItem(name: "lat", value: "\(lat)"),
-                URLQueryItem(name: "lon", value: "\(lon)"),
-                URLQueryItem(name: "appid", value: apiKey),
-                URLQueryItem(name: "units", value: "metric")
-            ]
+        case .currentWeather(let lat, let lon):
+            return ["lat": "\(lat)" , "lon": "\(lon)"]
             
-        case .hourlyForecast(let lat, let lon, let apiKey):
-            return [
-                URLQueryItem(name: "lat", value: "\(lat)"),
-                URLQueryItem(name: "lon", value: "\(lon)"),
-                URLQueryItem(name: "appid", value: apiKey),
-                URLQueryItem(name: "units", value: "metric")
-            ]
+        case .hourlyForecast(let lat, let lon):
+            return ["lat": "\(lat)" , "lon": "\(lon)"]
         }
     }
+                     
+    var shouldIncludeMetricUnits: Bool {
+        switch self {
+        case .coordinates:
+            return false
+        case .currentWeather, .hourlyForecast:
+            return true
+        }
+    }
+                     
         var httpMethod: HTTPMethod {
             switch self {
             case .coordinates, .currentWeather, .hourlyForecast:

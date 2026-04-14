@@ -13,7 +13,9 @@ extension URLRequest {
         components.scheme = "https"
         components.host = "api.openweathermap.org"
         components.path = weatherEndpoint.path
-        components.queryItems = weatherEndpoint.queryItems
+        components.queryItems = weatherEndpoint.queryParameters.map({
+            URLQueryItem(name: $0.key, value: $0.value)
+        })
         
         guard let url = components.url else { return nil }
         self.init(url: url)
