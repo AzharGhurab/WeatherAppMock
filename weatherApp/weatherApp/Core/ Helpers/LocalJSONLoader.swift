@@ -9,19 +9,23 @@ import Foundation
 
 final class LocalJSONLoader {
     
-    static func loadDailyWeather() -> [DailyWeather] {
+    static func loadDailyWeather()-> Result<[DailyWeather], Error>  {
+        
         guard let url = Bundle.main.url(forResource: "SampleDailyWeather", withExtension: "json") else {
             print("Could not find SampleDailyWeather.json")
-            return []
+            return.failure(NSError(
+                domain: "LocalJSONLoader",
+                code: 404,
+                userInfo: [NSLocalizedDescriptionKey: "Could not find SampleDailyWeather.json"]
+            ))
         }
         
         do {
             let data = try Data(contentsOf: url)
             let dailyWeather = try JSONDecoder().decode([DailyWeather].self, from: data)
-            return dailyWeather
+            return .success(dailyWeather)
         } catch {
-            print("Failed to load daily weather JSON:", error)
-            return []
+            return . failure(error)
         }
     }
 }
