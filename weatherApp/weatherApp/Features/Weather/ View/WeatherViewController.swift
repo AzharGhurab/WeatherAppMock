@@ -22,14 +22,16 @@ class WeatherViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let result = LocalJSONLoader.loadDailyWeather()
-        switch result {
-        case .success(let data):
-            sampleDaily = data
-            
-        case .failure(let error):
-            print("Failed to load local JSON:", error.localizedDescription)
-            sampleDaily = []
+        LocalJSONLoader.loadDailyWeather { [weak self] result in
+            switch result {
+            case .success(let data):
+                self?.sampleDaily = data
+                self?.tableView.reloadData()
+                
+            case .failure(let error):
+                print("Failed to load local JSON:", error.localizedDescription)
+                self?.sampleDaily = []
+            }
         }
         view.backgroundColor = .clear
         navigationController?.setNavigationBarHidden(false, animated: false)
