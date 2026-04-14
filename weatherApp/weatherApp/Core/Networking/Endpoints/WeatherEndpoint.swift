@@ -13,24 +13,28 @@ enum WeatherEndpoint {
     case currentWeather(lat: Double, lon: Double, apiKey: String)
     case hourlyForecast(lat: Double, lon: Double, apiKey: String)
     
-    var url: URL? {
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = "api.openweathermap.org"
-        
+    var path: String {
         switch self {
-            
+        case .coordinates:
+            return "/geo/1.0/direct"
+        case .currentWeather:
+            return "/data/2.5/weather"
+        case .hourlyForecast:
+            return "/data/2.5/forecast"
+        }
+    }
+    
+    var queryItems: [URLQueryItem] {
+        switch self {
         case .coordinates(let city, let apiKey):
-            components.path = "/geo/1.0/direct"
-            components.queryItems = [
+            return [
                 URLQueryItem(name: "q", value: city),
                 URLQueryItem(name: "limit", value: "1"),
                 URLQueryItem(name: "appid", value: apiKey)
             ]
             
         case .currentWeather(let lat, let lon, let apiKey):
-            components.path = "/data/2.5/weather"
-            components.queryItems = [
+            return [
                 URLQueryItem(name: "lat", value: "\(lat)"),
                 URLQueryItem(name: "lon", value: "\(lon)"),
                 URLQueryItem(name: "appid", value: apiKey),
@@ -38,15 +42,19 @@ enum WeatherEndpoint {
             ]
             
         case .hourlyForecast(let lat, let lon, let apiKey):
-            components.path = "/data/2.5/forecast"
-            components.queryItems = [
+            return [
                 URLQueryItem(name: "lat", value: "\(lat)"),
                 URLQueryItem(name: "lon", value: "\(lon)"),
                 URLQueryItem(name: "appid", value: apiKey),
                 URLQueryItem(name: "units", value: "metric")
             ]
         }
-        
-        return components.url
     }
-}
+        var httpMethod: HTTPMethod {
+            switch self {
+            case .coordinates, .currentWeather, .hourlyForecast:
+                return .get
+            }
+        }
+    }
+
