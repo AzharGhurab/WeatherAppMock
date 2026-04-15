@@ -56,18 +56,5 @@ class HourlyItemCell: UICollectionViewCell {
         
         weatherImageView.tintColor = .white
     }
- private func loadImage(icon: String) {
-        let urlString = "https://openweathermap.org/img/wn/\(icon)@2x.png"
-        
-        guard let url = URL(string: urlString) else { return }
-        
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            guard let data = data else { return }
-            
-            DispatchQueue.main.async {
-                self.weatherImageView.image = UIImage(data: data)
-            }
-        }.resume()
-    }
 }
 
