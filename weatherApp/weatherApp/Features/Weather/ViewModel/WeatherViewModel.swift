@@ -13,6 +13,22 @@ class WeatherViewModel {
     
     var weather: WeatherResponse?
     var hourlyForecast: [HourlyWeather] = []
+    var sampleDaily: [DailyWeather] = []
+    
+    func loadDailyWeather(completion: (() -> Void)? = nil) {
+        LocalJSONLoader.loadDailyWeather { [weak self] result in
+            switch result {
+            case .success(let data):
+                self?.sampleDaily = data
+                
+            case .failure(let error):
+                print("Failed to load local JSON:", error.localizedDescription)
+                self?.sampleDaily = []
+            }
+            
+            completion?()
+        }
+    }
     
     func loadWeather(for city: String,
                      completion: @escaping (Result<Void, Error>) -> Void) {

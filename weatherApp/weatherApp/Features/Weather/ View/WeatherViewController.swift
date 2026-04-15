@@ -18,20 +18,11 @@ class WeatherViewController: UIViewController {
     let searchBar = UISearchBar()
     var currentCity: String = "Riyadh"
     var hourlyData: [HourlyWeather] = []
-    var sampleDaily: [DailyWeather] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        LocalJSONLoader.loadDailyWeather { [weak self] result in
-            switch result {
-            case .success(let data):
-                self?.sampleDaily = data
-                self?.tableView.reloadData()
-                
-            case .failure(let error):
-                print("Failed to load local JSON:", error.localizedDescription)
-                self?.sampleDaily = []
-            }
+        viewModel.loadDailyWeather { [weak self] in
+            self?.tableView.reloadData()
         }
         view.backgroundColor = .clear
         navigationController?.setNavigationBarHidden(false, animated: false)
@@ -149,7 +140,7 @@ func loadWeather(for city: String) {
                minTemp: day.temp.min,
                description: day.weather.first?.description ?? "Clear"
                )
-        let detailsViewModel = DayDetailsViewModel(model: model, dailyData: sampleDaily)
+        let detailsViewModel = DayDetailsViewModel(model: model, dailyData:viewModel.sampleDaily)
         let detailsVC = DayDetailsViewController(viewModel: detailsViewModel)
 
         detailsVC.modalPresentationStyle = .overFullScreen
@@ -159,7 +150,7 @@ func loadWeather(for city: String) {
     }
     
     func showDetails(for hour: HourlyWeather) {
-        if let matched = sampleDaily.min(by: {
+        if let matched = viewModel.sampleDaily.min(by: {
             abs(Double($0.dt - hour.dt)) < abs(Double($1.dt - hour.dt))
         }) {
             let model = DayDetailsModel(
@@ -168,7 +159,7 @@ func loadWeather(for city: String) {
                 minTemp: matched.temp.min,
                 description: matched.weather.first?.description ?? "Clear"
             )
-            let detailsViewModel = DayDetailsViewModel(model: model, dailyData: sampleDaily)
+            let detailsViewModel = DayDetailsViewModel(model: model, dailyData: viewModel.sampleDaily)
             let detailsVC = DayDetailsViewController(viewModel: detailsViewModel)
             detailsVC.modalPresentationStyle = .overFullScreen
             detailsVC.modalTransitionStyle = .crossDissolve
@@ -218,7 +209,7 @@ extension WeatherViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1 + sampleDaily.count
+        return 1 + viewModel.sampleDaily.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -243,7 +234,7 @@ extension WeatherViewController: UITableViewDataSource, UITableViewDelegate {
             ) as! DailyForecastCell
             
             let dailyIndex = indexPath.row - 1
-            let dayData = sampleDaily[dailyIndex]
+            let dayData = viewModel.sampleDaily[dailyIndex]
             cell.configure(with: dayData)
             cell.backgroundColor = .clear
             cell.contentView.backgroundColor = .clear
@@ -253,7 +244,7 @@ extension WeatherViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row != 0 {
             let dailyIndex = indexPath.row - 1
-            let selectedDay = sampleDaily[dailyIndex]
+            let selectedDay = viewModel.sampleDaily[dailyIndex]
             showDetails(for: selectedDay)
         }
         
