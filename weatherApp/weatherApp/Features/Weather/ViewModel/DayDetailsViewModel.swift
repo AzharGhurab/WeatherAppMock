@@ -18,16 +18,13 @@ class DayDetailsViewModel {
     }
     
     var selectedDateText: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMM yyyy"
-        return formatter.string(from: model.date)
-    }
+        model.date.toShortDateString()
+        }
+    
     
     var fullDateText: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, dd MMMM yyyy"
-        return formatter.string(from: model.date)
-    }
+        model.date.toFullDateString()
+        }
     
     var temperatureText: String {
         "\(Int(model.maxTemp))°"
