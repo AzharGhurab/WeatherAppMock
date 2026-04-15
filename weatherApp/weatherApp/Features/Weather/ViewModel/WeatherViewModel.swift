@@ -38,8 +38,14 @@ class WeatherViewModel {
                 group.enter()
                 self?.service.fetchHourlyForecast(lat: lat, lon: lon) { result in
                     switch result {
-                    case .success(let hourly):
-                        self?.hourlyForecast = hourly
+                    case .success(let forecastResponse):
+                        self?.hourlyForecast = forecastResponse.list.prefix(8).map {
+                            HourlyWeather(
+                                dt: $0.dt,
+                                temp: $0.main.temp,
+                                weather: $0.weather
+                            )
+                        }
                     case .failure(let error):
                         capturedError = error
                     }
