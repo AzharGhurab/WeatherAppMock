@@ -30,22 +30,31 @@ class CitiesViewController: UIViewController {
         setupTableView()
     }
 
-private func loadCities() {
-    guard let url = Bundle.main.url(forResource: "cities", withExtension: "json") else {
-        print("cities.json not found")
-        return
+    private func loadCities() {
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self else { return }
+            guard let url = Bundle.main.url(forResource: "cities", withExtension: "json") else {
+                DispatchQueue.main.async {
+                    print("cities.json not found")
+                }
+                return
+            }
+            
+            do {
+                let data = try Data(contentsOf: url)
+                let decodedCities = try JSONDecoder().decode([String].self, from: data)
+                DispatchQueue.main.async {
+                    self.cities = decodedCities
+                    self.filteredCities = decodedCities
+                    self.tableView.reloadData()
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    print("Failed to load cities: \(error)")
+                }
+            }
+        }
     }
-    
-    do {
-        let data = try Data(contentsOf: url)
-        cities = try JSONDecoder().decode([String].self, from: data)
-        filteredCities = cities
-    } catch {
-        print("Failed to load cities: \(error)")
-    }
-}
-
-    
     private func setupSearchBar() {
         searchBar.placeholder = "Search city"
         searchBar.delegate = self
