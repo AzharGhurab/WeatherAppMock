@@ -13,6 +13,12 @@ protocol CitySelectionDelegate: AnyObject {
 class WeatherViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var mapButton: UIButton!
+    
+    @IBAction func mapButtonTapped(_ sender: UIButton) {
+        let mapVC = MapWeatherViewController(nibName: "MapWeatherViewController", bundle: nil)
+        navigationController?.pushViewController(mapVC, animated: true)
+    }
     let viewModel = WeatherViewModel()
     let backgroundGradient = CAGradientLayer()
     let searchBar = UISearchBar()
@@ -21,6 +27,14 @@ class WeatherViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let height = mapButton.bounds.height
+        mapButton.layer.cornerRadius = height/2
+        mapButton.clipsToBounds = true
+        mapButton.layer.borderWidth = 2
+        mapButton.layer.borderColor = UIColor.darkGray.withAlphaComponent(0.30).cgColor
+        mapButton.backgroundColor = UIColor.black.withAlphaComponent(0.50)
+        
         viewModel.loadDailyWeather { [weak self] in
             self?.tableView.reloadData()
         }
@@ -30,7 +44,7 @@ class WeatherViewController: UIViewController {
         setupHeaderView()
         updateBackground()
         loadWeather(for: currentCity)
-        
+
     }
     
     override func viewDidLayoutSubviews() {

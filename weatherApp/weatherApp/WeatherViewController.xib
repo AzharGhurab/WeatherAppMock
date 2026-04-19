@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="WeatherViewController" customModule="weatherApp" customModuleProvider="target">
             <connections>
+                <outlet property="mapButton" destination="8Zg-yX-CTl" id="8zX-z4-HNM"/>
                 <outlet property="tableView" destination="eAH-qD-UkV" id="kpm-Yd-oVM"/>
                 <outlet property="view" destination="iN0-l3-epB" id="1A3-RX-XPG"/>
             </connections>
@@ -27,11 +28,27 @@
                         <outlet property="dataSource" destination="-1" id="QIY-Jk-U8a"/>
                     </connections>
                 </tableView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Zg-yX-CTl" userLabel="mapButton">
+                    <rect key="frame" x="18" y="732" width="44" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="3hn-tD-BzU"/>
+                        <constraint firstAttribute="width" constant="44" id="tPC-lH-FVc"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="map" catalog="system">
+                        <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </buttonConfiguration>
+                    <connections>
+                        <action selector="mapButtonTapped:" destination="-1" eventType="touchUpInside" id="Ydd-1n-bzW"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="eAH-qD-UkV" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="DRd-5s-NQL"/>
+                <constraint firstItem="8Zg-yX-CTl" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="18" id="RHH-88-AvW"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="8Zg-yX-CTl" secondAttribute="bottom" constant="8" id="WOv-mj-fnh"/>
                 <constraint firstItem="eAH-qD-UkV" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="cUY-6J-ya3"/>
                 <constraint firstItem="eAH-qD-UkV" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="eDd-iD-m1c"/>
                 <constraint firstItem="eAH-qD-UkV" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="xWM-wf-puH"/>
@@ -40,6 +57,7 @@
         </view>
     </objects>
     <resources>
+        <image name="map" catalog="system" width="128" height="112"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
