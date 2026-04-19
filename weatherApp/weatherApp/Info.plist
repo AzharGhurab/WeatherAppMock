@@ -26,5 +26,7 @@
 		<key>UIImageName</key>
 		<string></string>
 	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to show weather for your current city.</string>
 </dict>
 </plist>

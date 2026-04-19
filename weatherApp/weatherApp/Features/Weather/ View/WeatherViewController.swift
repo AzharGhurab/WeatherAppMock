@@ -44,14 +44,11 @@ class WeatherViewController: UIViewController {
         setupHeaderView()
         updateBackground()
         loadWeather(for: currentCity)
-
-    }
-    
+}
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         backgroundGradient.frame = view.bounds
     }
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: false)
