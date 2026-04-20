@@ -15,46 +15,81 @@ class WeatherViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapButton: UIButton!
     
-    @IBAction func mapButtonTapped(_ sender: UIButton) {
-        let mapVC = MapWeatherViewController(nibName: "MapWeatherViewController", bundle: nil)
-        navigationController?.pushViewController(mapVC, animated: true)
-    }
     let viewModel = WeatherViewModel()
     let backgroundGradient = CAGradientLayer()
     let searchBar = UISearchBar()
     var currentCity: String = "Riyadh"
     var hourlyData: [HourlyWeather] = []
+    var selectedWeather: WeatherResponse?
+    var isPresentedFromMap = false
+    
+    @IBAction func mapButtonTapped(_ sender: UIButton) {
+        let mapVC = MapWeatherViewController(nibName: "MapWeatherViewController", bundle: nil)
+        navigationController?.pushViewController(mapVC, animated: true)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let height = mapButton.bounds.height
-        mapButton.layer.cornerRadius = height/2
-        mapButton.clipsToBounds = true
-        mapButton.layer.borderWidth = 2
-        mapButton.layer.borderColor = UIColor.darkGray.withAlphaComponent(0.30).cgColor
-        mapButton.backgroundColor = UIColor.black.withAlphaComponent(0.50)
-        
-        viewModel.loadDailyWeather { [weak self] in
-            self?.tableView.reloadData()
-        }
-        view.backgroundColor = .clear
-        navigationController?.setNavigationBarHidden(false, animated: false)
+        setupMapButton()
+        setupView()
         setupTableView()
-        setupHeaderView()
         updateBackground()
-        loadWeather(for: currentCity)
-}
+        loadDailyData()
+        configurePresentationMode()
+        configureInitialWeather()
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         backgroundGradient.frame = view.bounds
     }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
 }
 
+extension WeatherViewController {
+    
+    private func setupView() {
+        view.backgroundColor = .clear
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    private func setupMapButton() {
+        let height = mapButton.bounds.height
+        mapButton.layer.cornerRadius = height / 2
+        mapButton.clipsToBounds = true
+        mapButton.layer.borderWidth = 2
+        mapButton.layer.borderColor = UIColor.darkGray.withAlphaComponent(0.30).cgColor
+        mapButton.backgroundColor = UIColor.black.withAlphaComponent(0.50)
+    }
+    
+    private func loadDailyData() {
+        viewModel.loadDailyWeather { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
+    
+    private func configurePresentationMode() {
+        if isPresentedFromMap {
+            mapButton.isHidden = true
+            searchBar.isHidden = true
+        }
+    }
+    
+    private func configureInitialWeather() {
+        if let selectedWeather = selectedWeather {
+            viewModel.weather = selectedWeather
+            currentCity = selectedWeather.name
+        }
+        
+        setupHeaderView()
+        loadWeather(for: currentCity)
+    }
+}
 extension WeatherViewController {
     
     func setupTableView() {
@@ -120,7 +155,10 @@ extension WeatherViewController {
             view.layer.insertSublayer(backgroundGradient, at: 0)
         }
     }
-func updateCity(_ city: String) {
+}
+extension WeatherViewController {
+    
+    func updateCity(_ city: String) {
         currentCity = city
         
         if let header = tableView.tableHeaderView?.subviews.first(where: {$0 is CurrentWeatherCell}) as? CurrentWeatherCell {
@@ -143,8 +181,9 @@ func loadWeather(for city: String) {
             }
         }
     }
-    
-    func showDetails(for day: DailyWeather) {
+}
+extension WeatherViewController {
+        func showDetails(for day: DailyWeather) {
         let model = DayDetailsModel(
                date: day.dt.toDate(),
                maxTemp: day.temp.max,

@@ -9,12 +9,18 @@ import UIKit
 import MapKit
 
 final class MapWeatherViewController: UIViewController {
-
+    
     @IBOutlet weak var mapView: MKMapView!
     
     private let locationManager = LocationManager()
     private let viewModel = MapWeatherViewModel()
+    private var selectedWeather: WeatherResponse?
+     var hideCardWorkItem: DispatchWorkItem?
     
+  lazy var weatherCard: CurrentWeatherCell = {
+        let nib = UINib(nibName: "CurrentWeatherCell", bundle: nil)
+        return nib.instantiate(withOwner: nil, options: nil).first as! CurrentWeatherCell
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Weather Map"
@@ -22,6 +28,7 @@ final class MapWeatherViewController: UIViewController {
         
         setupLocation()
         setupGesture()
+        setupWeatherCard()
     }
     
     private func setupLocation() {
@@ -51,18 +58,68 @@ final class MapWeatherViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleMapTap))
         mapView.addGestureRecognizer(tap)
     }
+    func hideWeatherCard() {
+        UIView.animate(withDuration: 0.25, animations: {
+            self.weatherCard.alpha = 0
+            self.weatherCard.transform = CGAffineTransform(translationX: 0, y: 120)
+        }) { _ in
+            self.weatherCard.isHidden = true
+        }
+    }
     
     @objc private func handleMapTap(_ gesture: UITapGestureRecognizer) {
         let point = gesture.location(in: mapView)
         let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
         
-        viewModel.fetchWeather(lat: coordinate.latitude, lon: coordinate.longitude) { result in
-            switch result {
-            case .success(let weather):
-                print("Temp:", weather.main.temp)
-            case .failure(let error):
-                print(error.localizedDescription)
+        addPin(at: coordinate)
+        mapView.setCenter(coordinate, animated: true)
+        
+        viewModel.fetchWeather(
+            lat: coordinate.latitude,
+            lon: coordinate.longitude
+        ) { [weak self] result in
+            
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let weather):
+                    self.selectedWeather = weather
+                    self.weatherCard.configure(with: weather)
+                    self.showWeatherCard()
+                    
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
             }
         }
+    }
+    
+    private func addPin(at coordinate: CLLocationCoordinate2D) {
+        let annotations = mapView.annotations.filter { !($0 is MKUserLocation) }
+        mapView.removeAnnotations(annotations)
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = coordinate
+        annotation.title = "Selected Location"
+        
+        mapView.addAnnotation(annotation)
+    }
+    
+    @objc func openWeatherPopup() {
+        let weatherVC = WeatherViewController(
+            nibName: "WeatherViewController",
+            bundle: nil
+        )
+        weatherVC.selectedWeather = selectedWeather
+        weatherVC.isPresentedFromMap = true
+        weatherVC.modalPresentationStyle = .pageSheet
+        
+        if let sheet = weatherVC.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+        }
+        
+        present(weatherVC, animated: true)
     }
 }

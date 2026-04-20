@@ -21,5 +21,10 @@ class CurrentWeatherCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
     }
+    func configure(with weather: WeatherResponse) {
+        cityLabel.text = weather.name
+        temperatureLabel.text = "\(Int(weather.main.temp))°"
+        descriptionLabel.text = weather.weather.first?.description.capitalized ?? "Clear"
+    }
     
 }
