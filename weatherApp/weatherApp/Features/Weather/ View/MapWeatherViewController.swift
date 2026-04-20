@@ -48,7 +48,7 @@ final class MapWeatherViewController: UIViewController {
         }
         
         locationManager.onAuthorizationDenied = {
-            print("Permission denied")
+            MessagePresenter.showError("Location permission denied")
         }
         
         locationManager.requestPermission()
@@ -73,7 +73,7 @@ final class MapWeatherViewController: UIViewController {
         
         addPin(at: coordinate)
         mapView.setCenter(coordinate, animated: true)
-        
+        LoadingPresenter.show(on: view)
         viewModel.fetchWeather(
             lat: coordinate.latitude,
             lon: coordinate.longitude
@@ -84,12 +84,14 @@ final class MapWeatherViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let weather):
+                    LoadingPresenter.hide()
                     self.selectedWeather = weather
                     self.weatherCard.configure(with: weather)
                     self.showWeatherCard()
                     
-                case .failure(let error):
-                    print(error.localizedDescription)
+                case .failure:
+                    LoadingPresenter.hide()
+                    MessagePresenter.showError("Failed to load weather")
                 }
             }
         }

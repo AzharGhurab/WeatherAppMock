@@ -4,6 +4,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -16,42 +17,28 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="161"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="oUN-qj-Y86">
-                        <rect key="frame" x="117" y="0.0" width="86" height="125.66666666666666"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Riyadh" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kh2-gO-38B">
-                                <rect key="frame" x="0.0" y="0.0" width="86" height="34.666666666666664"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="29"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27°" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j3N-Cc-zC3">
-                                <rect key="frame" x="4.6666666666666714" y="38.666666666666657" width="77" height="60"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="50"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sunny" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HPx-ys-8rX">
-                                <rect key="frame" x="16.666666666666654" y="102.66666666666667" width="52.666666666666657" height="23"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                    </stackView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EhY-A4-oI1" customClass="CurrentWeatherCardView" customModule="weatherApp" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="161"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="oUN-qj-Y86" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="Lr3-tf-GHq"/>
-                    <constraint firstItem="oUN-qj-Y86" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Xrd-Tt-PqQ"/>
+                    <constraint firstItem="EhY-A4-oI1" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailing" id="JSB-v4-YFt"/>
+                    <constraint firstItem="EhY-A4-oI1" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottom" id="OlV-7L-3EX"/>
+                    <constraint firstItem="EhY-A4-oI1" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="gns-Rp-iF1"/>
+                    <constraint firstItem="EhY-A4-oI1" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="qAF-N5-ifY"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="cityLabel" destination="Kh2-gO-38B" id="Ngz-Nu-vhA"/>
-                <outlet property="descriptionLabel" destination="HPx-ys-8rX" id="O2Q-kQ-otI"/>
-                <outlet property="temperatureLabel" destination="j3N-Cc-zC3" id="YWi-ss-Elc"/>
+                <outlet property="weatherCardView" destination="EhY-A4-oI1" id="uoU-Zm-qJb"/>
             </connections>
             <point key="canvasLocation" x="138.93129770992365" y="194.71830985915494"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

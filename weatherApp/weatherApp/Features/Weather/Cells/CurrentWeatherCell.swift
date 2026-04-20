@@ -9,22 +9,19 @@ import UIKit
 
 class CurrentWeatherCell: UITableViewCell {
     
-    @IBOutlet weak var cityLabel: UILabel!
-    @IBOutlet weak var temperatureLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var weatherCardView: CurrentWeatherCardView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-    }
     func configure(with weather: WeatherResponse) {
-        cityLabel.text = weather.name
-        temperatureLabel.text = "\(Int(weather.main.temp))°"
-        descriptionLabel.text = weather.weather.first?.description.capitalized ?? "Clear"
+        weatherCardView.configure(with: weather)
     }
     
+    func configure(city: String, temperature: String, description: String) {
+        weatherCardView.configure(city: city, temperature: temperature, description: description)
+    }
 }

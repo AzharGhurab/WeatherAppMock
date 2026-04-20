@@ -124,16 +124,12 @@ extension WeatherViewController {
         searchBar.delegate = self
         
         let headerCell = Bundle.main.loadNibNamed("CurrentWeatherCell", owner: self)?.first as! CurrentWeatherCell
-        
         headerCell.frame = CGRect(x: 0, y: 60, width: tableView.bounds.width, height: 140)
-        headerCell.cityLabel.text = currentCity
+        
         if let weather = viewModel.weather {
-            headerCell.temperatureLabel.text = "\(Int(weather.main.temp))°"
-            headerCell.descriptionLabel.text = weather.weather.first?.description.capitalized ?? "Clear"
+            headerCell.configure(with: weather)
         } else {
-            headerCell.cityLabel.text = currentCity
-            headerCell.temperatureLabel.text = "27°"
-            headerCell.descriptionLabel.text = "Sunny"
+            headerCell.configure(city: currentCity, temperature: "27°", description: "Sunny")
         }
         headerCell.backgroundColor = .clear
         headerCell.contentView.backgroundColor = .clear
@@ -162,22 +158,26 @@ extension WeatherViewController {
         currentCity = city
         
         if let header = tableView.tableHeaderView?.subviews.first(where: {$0 is CurrentWeatherCell}) as? CurrentWeatherCell {
-            header.cityLabel.text = city
+            header.weatherCardView.cityLabel.text = city
         }
     }
-func loadWeather(for city: String) {
+    func loadWeather(for city: String) {
+        LoadingPresenter.show(on: view)
         viewModel.loadWeather(for: city) { [weak self] result in
             guard let self = self else { return }
-            
-            switch result {
-            case .success:
-                self.currentCity = city
-                self.hourlyData = self.viewModel.hourlyForecast
-                self.setupHeaderView()
-                self.tableView.reloadData()
-                
-            case .failure(let error):
-                print("Weather error:", error.localizedDescription)
+            DispatchQueue.main.async {
+                LoadingPresenter.hide()
+                switch result {
+                case .success:
+                    LoadingPresenter.hide()
+                    self.currentCity = city
+                    self.hourlyData = self.viewModel.hourlyForecast
+                    self.setupHeaderView()
+                    self.tableView.reloadData()
+                    
+                case .failure:
+                    MessagePresenter.showError("Failed to load weather")
+                }
             }
         }
     }
@@ -225,6 +225,7 @@ extension WeatherViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let city = searchBar.text, !city.isEmpty else { return }
         updateCity(city)
+        loadWeather(for: city)
         searchBar.resignFirstResponder()
     }
     
