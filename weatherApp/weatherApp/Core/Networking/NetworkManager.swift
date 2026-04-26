@@ -43,7 +43,7 @@ class NetworkManager {
                 return
             }
             
-            guard 200...299 ~= httpResponse.statusCode else {
+            guard 204 == httpResponse.statusCode else {
                 DispatchQueue.main.async {
                     completion(.failure(NetworkError.httpError(statusCode: httpResponse.statusCode)))
                 }

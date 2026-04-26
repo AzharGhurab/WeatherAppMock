@@ -21,6 +21,7 @@ struct WeatherResponse: Decodable {
 
    struct Wind: Decodable {
        let speed: Double
+       let deg: Int
    }
 
 
@@ -32,6 +33,7 @@ struct HourlyWeather {
 
 struct DailyWeather: Decodable {
     let dt: Int
+    let rain: Double
     let temp: Temperature
     let weather: [WeatherCondition]
 }

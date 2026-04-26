@@ -223,7 +223,7 @@ extension WeatherViewController {
 extension WeatherViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let city = searchBar.text, !city.isEmpty else { return }
+        let city = searchBar.text!
         updateCity(city)
         loadWeather(for: city)
         searchBar.resignFirstResponder()
@@ -270,8 +270,8 @@ extension WeatherViewController: UITableViewDataSource, UITableViewDelegate {
                 withIdentifier: "HourlyForecastCell",
                 for: indexPath
             ) as! HourlyForecastCell
-            cell.onHourTapped = { [weak self] selectedHour in
-                self?.showDetails(for: selectedHour)
+            cell.onHourTapped = { selectedHour in
+                self.showDetails(for: selectedHour)
             }
             cell.configure(with: hourlyData)
             cell.backgroundColor = .clear
