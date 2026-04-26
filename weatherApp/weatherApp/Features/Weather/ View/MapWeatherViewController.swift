@@ -25,6 +25,7 @@ final class MapWeatherViewController: UIViewController {
         super.viewDidLoad()
         title = "Weather Map"
         mapView.showsUserLocation = true
+        mapView.delegate = self
         
         setupLocation()
         setupGesture()
@@ -123,5 +124,14 @@ final class MapWeatherViewController: UIViewController {
         }
         
         present(weatherVC, animated: true)
+    }
+}
+
+
+extension MapWeatherViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        let annotations = mapView.annotations
+        mapView.removeAnnotations(annotations)
     }
 }

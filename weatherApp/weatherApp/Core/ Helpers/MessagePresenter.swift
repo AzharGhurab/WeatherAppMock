@@ -19,7 +19,7 @@ enum MessagePresenter {
         view.button?.isHidden = true
         
         var config = SwiftMessages.Config()
-        config.presentationStyle = .top
+        config.presentationStyle = .center
         config.duration = .seconds(seconds: 2)
         
         SwiftMessages.show(config: config, view: view)

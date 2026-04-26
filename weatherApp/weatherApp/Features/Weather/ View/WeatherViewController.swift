@@ -163,6 +163,7 @@ extension WeatherViewController {
     }
     func loadWeather(for city: String) {
         LoadingPresenter.show(on: view)
+        let viewModel = WeatherViewModel()
         viewModel.loadWeather(for: city) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
@@ -171,7 +172,7 @@ extension WeatherViewController {
                 case .success:
                     LoadingPresenter.hide()
                     self.currentCity = city
-                    self.hourlyData = self.viewModel.hourlyForecast
+                    self.hourlyData = viewModel.hourlyForecast
                     self.setupHeaderView()
                     self.tableView.reloadData()
                     

@@ -49,6 +49,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        URLSession.shared.getAllTasks { tasks in
+            tasks.forEach { $0.cancel() }
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
