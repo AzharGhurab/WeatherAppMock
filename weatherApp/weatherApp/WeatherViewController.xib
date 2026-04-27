@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="WeatherViewController" customModule="weatherApp" customModuleProvider="target">
+            <connections>
+                <outlet property="mapButton" destination="8Zg-yX-CTl" id="8zX-z4-HNM"/>
+                <outlet property="tableView" destination="eAH-qD-UkV" id="kpm-Yd-oVM"/>
+                <outlet property="view" destination="iN0-l3-epB" id="1A3-RX-XPG"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="eAH-qD-UkV">
+                    <rect key="frame" x="0.0" y="118" width="393" height="666"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="QIY-Jk-U8a"/>
+                    </connections>
+                </tableView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Zg-yX-CTl" userLabel="mapButton">
+                    <rect key="frame" x="18" y="732" width="44" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="3hn-tD-BzU"/>
+                        <constraint firstAttribute="width" constant="44" id="tPC-lH-FVc"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="map" catalog="system">
+                        <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </buttonConfiguration>
+                    <connections>
+                        <action selector="mapButtonTapped:" destination="-1" eventType="touchUpInside" id="Ydd-1n-bzW"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="eAH-qD-UkV" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="DRd-5s-NQL"/>
+                <constraint firstItem="8Zg-yX-CTl" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="18" id="RHH-88-AvW"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="8Zg-yX-CTl" secondAttribute="bottom" constant="8" id="WOv-mj-fnh"/>
+                <constraint firstItem="eAH-qD-UkV" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="cUY-6J-ya3"/>
+                <constraint firstItem="eAH-qD-UkV" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="eDd-iD-m1c"/>
+                <constraint firstItem="eAH-qD-UkV" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="xWM-wf-puH"/>
+            </constraints>
+            <point key="canvasLocation" x="-48.091603053435115" y="108.45070422535211"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="map" catalog="system" width="128" height="112"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

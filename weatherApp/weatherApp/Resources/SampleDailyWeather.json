@@ -1,0 +1,152 @@
+[
+  {
+    "dt": 1775692800,
+    "temp": {
+      "min": 20,
+      "max": 28
+    },
+    "weather": [
+      {
+        "id": 1,
+        "main": "Clear",
+        "description": "clear sky",
+        "icon": "01d"
+      }
+    ]
+  },
+  {
+    "dt": 1775779200,
+    "temp": {
+      "min": 21,
+      "max": 29
+    },
+    "weather": [
+      {
+        "id": 2,
+        "main": "Clouds",
+        "description": "few clouds",
+        "icon": "02d"
+      }
+    ]
+  },
+  {
+    "dt": 1775865600,
+    "temp": {
+      "min": 19,
+      "max": 27
+    },
+    "weather": [
+      {
+        "id": 3,
+        "main": "Rain",
+        "description": "light rain",
+        "icon": "10d"
+      }
+    ]
+  },
+  {
+    "dt": 1775952000,
+    "temp": {
+      "min": 22,
+      "max": 30
+    },
+    "weather": [
+      {
+        "id": 4,
+        "main": "Clear",
+        "description": "sunny",
+        "icon": "01d"
+      }
+    ]
+  },
+  {
+    "dt": 1776038400,
+    "temp": {
+      "min": 23,
+      "max": 31
+    },
+    "weather": [
+      {
+        "id": 5,
+        "main": "Clouds",
+        "description": "scattered clouds",
+        "icon": "03d"
+      }
+    ]
+  },
+  {
+    "dt": 1776124800,
+    "temp": {
+      "min": 18,
+      "max": 26
+    },
+    "weather": [
+      {
+        "id": 6,
+        "main": "Rain",
+        "description": "moderate rain",
+        "icon": "10d"
+      }
+    ]
+  },
+  {
+    "dt": 1776211200,
+    "temp": {
+      "min": 17,
+      "max": 25
+    },
+    "weather": [
+      {
+        "id": 7,
+        "main": "Clouds",
+        "description": "overcast clouds",
+        "icon": "04d"
+      }
+    ]
+  },
+  {
+    "dt": 1776297600,
+    "temp": {
+      "min": 24,
+      "max": 33
+    },
+    "weather": [
+      {
+        "id": 8,
+        "main": "Clear",
+        "description": "hot sunny",
+        "icon": "01d"
+      }
+    ]
+  },
+  {
+    "dt": 1776384000,
+    "temp": {
+      "min": 21,
+      "max": 28
+    },
+    "weather": [
+      {
+        "id": 9,
+        "main": "Clouds",
+        "description": "few clouds",
+        "icon": "02d"
+      }
+    ]
+  },
+  {
+    "dt": 1776470400,
+    "temp": {
+      "min": 20,
+      "max": 27
+    },
+    "weather": [
+      {
+        "id": 10,
+        "main": "Clear",
+        "description": "clear sky",
+        "icon": "01d"
+      }
+    ]
+  }
+]
