@@ -19,7 +19,12 @@ final class MapWeatherViewController: UIViewController {
     
   lazy var weatherCard: CurrentWeatherCell = {
         let nib = UINib(nibName: "CurrentWeatherCell", bundle: nil)
-        return nib.instantiate(withOwner: nil, options: nil).first as! CurrentWeatherCell
+        
+        guard let cell = nib.instantiate(withOwner: nil, options: nil).first as? CurrentWeatherCell else {
+            fatalError("Failed to load CurrentWeatherCell from nib")
+        }
+        
+        return cell
     }()
     override func viewDidLoad() {
         super.viewDidLoad()
