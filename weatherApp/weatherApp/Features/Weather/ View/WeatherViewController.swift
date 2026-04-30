@@ -163,10 +163,10 @@ extension WeatherViewController {
     }
     func loadWeather(for city: String) {
         LoadingPresenter.show(on: view)
-        let viewModel = WeatherViewModel()
         viewModel.loadWeather(for: city) { [weak self] result in
             guard let self = self else { return }
             DispatchQueue.main.async {
+                let viewModel = WeatherViewModel()
                 LoadingPresenter.hide()
                 switch result {
                 case .success:
@@ -224,7 +224,7 @@ extension WeatherViewController {
 extension WeatherViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let city = searchBar.text!
+        guard let city = searchBar.text, !city.isEmpty else { return }
         updateCity(city)
         loadWeather(for: city)
         searchBar.resignFirstResponder()
@@ -235,7 +235,7 @@ extension WeatherViewController: UISearchBarDelegate {
         let vc = CitiesViewController()
         vc.delegate = self
         
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController!.pushViewController(vc, animated: true)
         
         return false
     }
